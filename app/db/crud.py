@@ -54,7 +54,10 @@ def get_pin_by_id(pin_id):
     
     for field_value in pin.field_values:
         field = session.query(Field).filter_by(id=field_value.field_id).first()
-        pin_data["fields"][field.name] = field_value.value
+        pin_data["fields"][field.name] = {
+            "value": field_value.value,
+            "type": field.field_type
+        }
     
     return pin_data
 

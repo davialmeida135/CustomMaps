@@ -22,20 +22,20 @@ def main(page: ft.Page):
             if page.width > page.height:
                 margem = ft.margin.symmetric(horizontal=page.width/4, vertical=page.height/6)
                 relative_width = page.width/2
-                relative_height = page.height/8
+                relative_height = page.height/3
             else:
                 margem = ft.margin.symmetric(horizontal=page.width/10, vertical=page.height/6)
                 relative_width = page.width/1.2
-                relative_height = page.height/7
+                relative_height = page.height/2
 
             page.overlay.clear()
             page.overlay.append(
                 ft.Container(
                     content=MarkerOverlay(page,self.coordinates,self.id),
                     padding=5,
-                    width=relative_width,
-                    height=relative_height,
-                    bgcolor=ft.colors.GREEN,
+                    #width=relative_width,
+                    #height=relative_height,
+                    bgcolor=ft.colors.LIGHT_BLUE_100,
                     alignment=ft.alignment.center,
                     border_radius=ft.border_radius.all(10),
                     margin=margem,
@@ -72,7 +72,7 @@ def main(page: ft.Page):
         page.add(ft.Text(f"request_permission: {gl.request_permission()}"))  
 
     # Create dot overlay with initial position
-    def handle_resize(e):
+    def update_dot_event(e):
         update_dot_position()
 
     def place_pin(type,lat,lng,fields):
@@ -86,10 +86,10 @@ def main(page: ft.Page):
         print(
             f"{e.name} - Source: {e.source} - Center: {e.center} - Zoom: {e.zoom} - Rotation: {e.rotation}"
         )
-        if e.source == map.MapEventSource.DRAG_END:
+        if e.source == map.MapEventSource.DRAG_END or e.source == map.MapEventSource.SCROLL_WHEEL:
             global last_center
             last_center = e.center
-            print("CNACNANCANCNANCA", last_center)
+            
 
     def place_marker_at_center(e):
         if marker_layer_ref.current:
@@ -186,11 +186,6 @@ def main(page: ft.Page):
             load_pins()
             page.update()
 
-
-
-    
-
-
     map_pch = ft.Column(
         expand=1,
         controls=[page_map],
@@ -235,9 +230,12 @@ def main(page: ft.Page):
     page.overlay.append(dot_overlay)
     update_dot_position(page, dot_overlay)
 
-    page.on_resize = handle_resize
+    page.on_resize = update_dot_event
     page.update()
     load_pins()
+    
 
 if __name__ == "__main__":
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
     ft.app(target=main)
