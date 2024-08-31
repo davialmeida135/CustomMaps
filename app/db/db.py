@@ -11,6 +11,8 @@ class PinType(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False, unique=True)  # Ensures name is unique
+    color = Column(String, nullable=False, default = "36aedc")
+    style = Column(String, nullable=False, default = "add_location")
     
     fields = relationship("Field", back_populates="pin_type")
     pins = relationship("Pin", back_populates="pin_type")

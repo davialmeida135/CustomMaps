@@ -7,8 +7,12 @@ from db.db import PinType, Pin, Field, FieldValue
 
 session = get_session()
 
-def create_pin_type(name, fields):
-    pin_type = PinType(name=name)
+def create_pin_type(name, fields, color=None, style="add_location"):
+    existing_pin_type = session.query(PinType).filter_by(name=name).first()
+    if existing_pin_type:
+        raise ValueError(f"PinType '{name}' already exists.")
+    
+    pin_type = PinType(name=name, color=color, style=style)
     session.add(pin_type)
     session.commit()
     
@@ -24,7 +28,7 @@ def add_pin(pin_type_name, latitude, longitude, field_values):
     if not pin_type:
         raise ValueError(f"PinType '{pin_type_name}' does not exist.")
     
-    pin = Pin(pin_type_id=pin_type.id, latitude=latitude, longitude=longitude)
+    pin = Pin(pin_type_id=pin_type.id, latitude=latitude, longitude=longitude,)
     session.add(pin)
     session.commit()
     
@@ -49,6 +53,8 @@ def get_pin_by_id(pin_id):
         "latitude": pin.latitude,
         "longitude": pin.longitude,
         "pin_type": pin.pin_type.name,
+        "color": pin.pin_type.color,
+        "style": pin.pin_type.style,
         "fields": {}
     }
     
@@ -91,6 +97,8 @@ def get_all_pins():
             "pin_type": pin.pin_type.name,
             "latitude": pin.latitude,
             "longitude": pin.longitude,
+            "color": pin.pin_type.color,
+            "style": pin.pin_type.style,
             "fields": {}
         }
         for field_value in pin.field_values:
@@ -129,9 +137,9 @@ def delete_pin(pin_id):
     session.commit()
 
 
-def update_pin_type(pin_type_id, new_name=None, updated_fields=None):
+def update_pin_type(pin_type_id, new_name=None, updated_fields=None, new_color=None, new_style=None):
     """
-    Updates the name and fields of an existing PinType.
+    Updates the name, fields, color, and style of an existing PinType.
 
     :param pin_type_id: The ID of the PinType to update.
     :param new_name: The new name for the PinType (optional).
@@ -140,6 +148,8 @@ def update_pin_type(pin_type_id, new_name=None, updated_fields=None):
                            If 'id' is None, a new field is created.
                            If a field with 'id' is found, it's updated.
                            To delete a field, remove it from the list.
+    :param new_color: The new color for the PinType (optional).
+    :param new_style: The new style for the PinType (optional).
     :return: The updated PinType object.
     """
     pin_type = session.query(PinType).filter_by(id=pin_type_id).first()
@@ -150,6 +160,14 @@ def update_pin_type(pin_type_id, new_name=None, updated_fields=None):
     # Update the name if provided
     if new_name:
         pin_type.name = new_name
+    
+    # Update the color if provided
+    if new_color:
+        pin_type.color = new_color
+    
+    # Update the style if provided
+    if new_style:
+        pin_type.style = new_style
     
     # Update or add new fields
     existing_field_ids = {field.id for field in pin_type.fields}

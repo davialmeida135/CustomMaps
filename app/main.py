@@ -14,7 +14,7 @@ def main(page: ft.Page):
 
         def __init__(self, coordinates, id):
             super().__init__(coordinates=coordinates, content=None)
-            self.content = ft.IconButton(ft.icons.ADD_LOCATION,on_click=self.handle_marker_click)
+            self.content = ft.IconButton('add_location',on_click=self.handle_marker_click)
             self.coordinates = coordinates
             self.id = id
 
@@ -75,11 +75,11 @@ def main(page: ft.Page):
     def update_dot_event(e):
         update_dot_position()
 
-    def place_pin(type,lat,lng,fields):
+    def place_pin(type,lat,lng,fields, color = "ff0000"):
             # Add a new pin to the database
             pin = pins_crud.add_pin(type,lat,lng,fields)
             # Add a new marker to the map
-            marker_layer_ref.current.markers.append(CustomMarker(map.MapLatitudeLongitude(pin.latitude, pin.longitude), pin.id))
+            marker_layer_ref.current.markers.append(CustomMarker(map.MapLatitudeLongitude(pin.latitude, pin.longitude), pin.id,))
             page.update()
 
     def handle_event(e: map.MapEvent):
@@ -94,11 +94,11 @@ def main(page: ft.Page):
     def place_marker_at_center(e):
         if marker_layer_ref.current:
             if last_center is not None:        
-                place_pin("Plant", last_center.latitude, last_center.longitude, {"Species": "jajajajaja", "Date Planted": "2002-03-03"})
+                place_pin("Planta", last_center.latitude, last_center.longitude, {"Especie": "jajajajaja", "Data": "2002-03-03"})
                 page.update()
             else:
                 center = page_map.configuration.initial_center
-                place_pin("Plant", center.latitude, center.longitude, {"Species": "jajajajaja", "Date Planted": "2002-03-03"})
+                place_pin("Planta", center.latitude, center.longitude, {"Especie": "jajajajaja", "Data": "2002-03-03"})
                 page.update()
 
     def build_map(zoom, latitude, longitude):
