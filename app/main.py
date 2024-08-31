@@ -2,6 +2,7 @@ from time import sleep
 import flet as ft
 import flet_core.map as map
 import random
+from create_pin_type_overlay import CreatePinTypeOverlay
 from marker_overlay import MarkerOverlay
 import db.crud as pins_crud
 
@@ -10,14 +11,20 @@ from dot_overlay import DotOverlay, update_dot_position
 def main(page: ft.Page):
     global last_center
     last_center = None
+    dot_overlay = DotOverlay()
+    gl = ft.Geolocator()
+    page.add(gl)
+    global selected_pin_type
+    selected_pin_type = None
+    
     class CustomMarker(map.Marker):
-
-        def __init__(self, coordinates, id):
+        def __init__(self, coordinates, id, color):
             super().__init__(coordinates=coordinates, content=None)
-            self.content = ft.IconButton('add_location',on_click=self.handle_marker_click)
+            self.color = color
             self.coordinates = coordinates
             self.id = id
-
+            self.content = ft.IconButton('add_location',on_click=self.handle_marker_click, icon_color=self.color)
+            
         def handle_marker_click(self, e):
             if page.width > page.height:
                 margem = ft.margin.symmetric(horizontal=page.width/4, vertical=page.height/6)
@@ -31,7 +38,7 @@ def main(page: ft.Page):
             page.overlay.clear()
             page.overlay.append(
                 ft.Container(
-                    content=MarkerOverlay(page,self.coordinates,self.id),
+                    content=MarkerOverlay(page,self.coordinates,self.id, load_pins=load_pins),
                     padding=5,
                     #width=relative_width,
                     #height=relative_height,
@@ -56,51 +63,62 @@ def main(page: ft.Page):
             return f"CustomMarker({self.coordinates})"
         
     def load_pins():
+        print("Loading pins...")
+        marker_layer_ref.current.markers.clear()
         pins = pins_crud.get_all_pins()
         for pin in pins:
             coordinates = map.MapLatitudeLongitude(pin["latitude"], pin["longitude"])
             id = pin["id"]
-            marker = CustomMarker(coordinates, id)
+            marker = CustomMarker(coordinates, id, pin['color'])
             marker_layer_ref.current.markers.append(marker)
 
-        page.update()
-
-    gl = ft.Geolocator()
-    page.add(gl)
+        print("Loaded pins!")
+        #page.update()
 
     def handle_permission_request(e):
         page.add(ft.Text(f"request_permission: {gl.request_permission()}"))  
 
     # Create dot overlay with initial position
     def update_dot_event(e):
-        update_dot_position()
+        print("update dot position")
+        update_dot_position(page, dot_overlay)
 
     def place_pin(type,lat,lng,fields, color = "ff0000"):
             # Add a new pin to the database
             pin = pins_crud.add_pin(type,lat,lng,fields)
             # Add a new marker to the map
-            marker_layer_ref.current.markers.append(CustomMarker(map.MapLatitudeLongitude(pin.latitude, pin.longitude), pin.id,))
+            marker_layer_ref.current.markers.append(CustomMarker(map.MapLatitudeLongitude(pin.latitude, pin.longitude), pin.id,pin.pin_type.color))
             page.update()
-
-    def handle_event(e: map.MapEvent):
-        print(
-            f"{e.name} - Source: {e.source} - Center: {e.center} - Zoom: {e.zoom} - Rotation: {e.rotation}"
-        )
-        if e.source == map.MapEventSource.DRAG_END or e.source == map.MapEventSource.SCROLL_WHEEL:
-            global last_center
-            last_center = e.center
             
-
+    def generate_empty_fields():
+        global selected_pin_type
+        fields = pins_crud.get_pin_type_by_name(selected_pin_type)['fields']
+        empty_fields = {}
+        for field in fields:
+            empty_fields[field['name']] = ""
+        return empty_fields
+        
     def place_marker_at_center(e):
+        global selected_pin_type
+        fields = generate_empty_fields()
+        
         if marker_layer_ref.current:
             if last_center is not None:        
-                place_pin("Planta", last_center.latitude, last_center.longitude, {"Especie": "jajajajaja", "Data": "2002-03-03"})
+                place_pin(selected_pin_type, last_center.latitude, last_center.longitude, fields )
                 page.update()
             else:
                 center = page_map.configuration.initial_center
-                place_pin("Planta", center.latitude, center.longitude, {"Especie": "jajajajaja", "Data": "2002-03-03"})
+                place_pin(selected_pin_type, center.latitude, center.longitude,{})
                 page.update()
-
+                
+    def handle_event(e: map.MapEvent):
+            print(
+                f"{e.name} - Source: {e.source} - Center: {e.center} - Zoom: {e.zoom} - Rotation: {e.rotation}"
+            )
+            if e.source == map.MapEventSource.DRAG_END or e.source == map.MapEventSource.SCROLL_WHEEL:
+                global last_center
+                last_center = e.center
+                
     def build_map(zoom, latitude, longitude):
         marker_layer_ref = ft.Ref[map.MarkerLayer]()
         circle_layer_ref = ft.Ref[map.CircleLayer]()
@@ -163,7 +181,23 @@ def main(page: ft.Page):
 
     global marker_layer_ref, circle_layer_ref, page_map, map_pch
     page_map, marker_layer_ref, circle_layer_ref = build_map(5, 15, 9)
+    
+    def build_pin_type_dropdown():
+        global selected_pin_type
+        pin_types = pins_crud.get_all_pin_types()
+        dropdown = ft.Dropdown(
+            options=[ft.dropdown.Option(text=pin_type['name']) for pin_type in pin_types],
+            on_change=handle_pin_type_selection,
+            value=pin_types[0]['name'] if pin_types else None,
+        )
+        selected_pin_type = dropdown.value
+        return dropdown
 
+    def handle_pin_type_selection(e):
+        #print(e)
+        global selected_pin_type
+        selected_pin_type = e.data
+        print(f"Selected pin type: {selected_pin_type}")
 
     def handle_find_myself(e):
         global marker_layer_ref, circle_layer_ref
@@ -185,11 +219,36 @@ def main(page: ft.Page):
             map_pch.controls.append(page_map)
             load_pins()
             page.update()
+            
+    
+    def show_create_pin_type_overlay(e):
+        page.overlay.clear()
+        page.overlay.append(
+            ft.Container(
+                content=CreatePinTypeOverlay(page),
+                padding=5,
+                width=page.width/1.5,
+                height=page.height/1.5,
+                bgcolor=ft.colors.LIGHT_BLUE_100,
+                alignment=ft.alignment.center,
+                border_radius=ft.border_radius.all(10),
+                margin=ft.margin.symmetric(horizontal=page.width/4, vertical=page.height/6),
+                shadow=ft.BoxShadow(
+                    spread_radius=0.5,
+                    blur_radius=5,
+                    color=ft.colors.BLACK,
+                    offset=ft.Offset(0, 0),
+                    blur_style=ft.ShadowBlurStyle.NORMAL,
+                ),
+            )
+        )
+        page.update()
 
     map_pch = ft.Column(
         expand=1,
         controls=[page_map],
     )
+    pin_type_dropdown = build_pin_type_dropdown()
     page.views.append(
         ft.View(
             "/",
@@ -209,8 +268,11 @@ def main(page: ft.Page):
                         content=ft.Row(
                             controls=[
                                 ft.Container(expand=True),
+                                ft.IconButton(icon=ft.icons.ADD, icon_color=ft.colors.WHITE, on_click=show_create_pin_type_overlay),
+                                pin_type_dropdown,
                                 ft.IconButton(icon=ft.icons.REMOVE_RED_EYE_OUTLINED, icon_color=ft.colors.WHITE,),
                                 ft.IconButton(icon=ft.icons.LOGOUT, icon_color=ft.colors.WHITE, ),
+                                
                             ]
                         ),
                     ),
@@ -225,15 +287,13 @@ def main(page: ft.Page):
         
     )
 
-    dot_overlay = DotOverlay()
     # Add dot overlay to the page's overlay
     page.overlay.append(dot_overlay)
     update_dot_position(page, dot_overlay)
 
     page.on_resize = update_dot_event
-    page.update()
     load_pins()
-    
+    page.update()
 
 if __name__ == "__main__":
     import logging

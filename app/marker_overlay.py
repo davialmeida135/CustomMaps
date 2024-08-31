@@ -1,5 +1,5 @@
 import flet as ft
-from db.crud import get_pin_by_id, update_pin
+from db.crud import get_pin_by_id, update_pin, delete_pin
 from dot_overlay import DotOverlay, update_dot_position
 import datetime
 
@@ -202,29 +202,41 @@ class Attribute(ft.Column):
 
 
 class MarkerOverlay(ft.Column):
-    def __init__(self, page: ft.Page,coordinates ,id: int):
+    def __init__(self, page: ft.Page,coordinates ,id: int, load_pins):
         super().__init__()
         self.page=page
         self.pin_id = id
         self.coordinates = coordinates
         self.expand= True
-        print(self.page)
         
         def clear_overlay(e):
-            print(self.page)
             self.page.overlay.clear()
-
             dot_overlay = DotOverlay()
-
             page.overlay.append(dot_overlay)
             update_dot_position(self.page, dot_overlay)
             #self.page.update()
-
+        
+        def delete_marker(e):
+            try:
+                print('delte pin called')
+                delete_pin(self.pin_id)  # Call the function to delete the marker
+                self.page.overlay.clear()
+                print('load_pins called')
+                load_pins()
+                print('load_pins completed')
+                dot_overlay = DotOverlay()
+                page.overlay.append(dot_overlay)
+                update_dot_position(self.page, dot_overlay)
+                print("update_dot_position end")
+            
+            except Exception as ex:
+                print(f"Error deleting marker: {ex}")
 
         pin_text = f'#{self.pin_id}'
         self.pin_id_field = ft.Text(value= pin_text, expand=True, color=ft.colors.BLACK, size=20, text_align=ft.TextAlign.JUSTIFY)
-        self.close_button = ft.IconButton(icon=ft.icons.CLOSE, icon_color=ft.colors.WHITE, alignment=ft.alignment.center_right,on_click=clear_overlay)
-        
+        self.delete_button = ft.IconButton(icon=ft.icons.DELETE_OUTLINED, on_click=delete_marker)
+        self.close_button = ft.IconButton(icon=ft.icons.CLOSE, alignment=ft.alignment.center_right,on_click=clear_overlay)
+
         # Fetch pin details
         pin_details = get_pin_by_id(self.pin_id)
         pin_info_list = ft.ListView(expand=True,spacing=5)
@@ -247,6 +259,7 @@ class MarkerOverlay(ft.Column):
                 ft.Row(
                     controls=[
                         self.pin_id_field,
+                        self.delete_button,
                         self.close_button,
                     ]
                 ),

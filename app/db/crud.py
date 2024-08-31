@@ -23,6 +23,44 @@ def create_pin_type(name, fields, color=None, style="add_location"):
     session.commit()
     return pin_type
 
+def get_all_pin_types():
+    pin_types = session.query(PinType).all()
+    print('==============================================')
+    print(pin_types)
+    result = []
+    
+    for pin_type in pin_types:
+        print(pin_type.name)
+        info = {}
+        info['name'] = pin_type.name
+        info['color'] = pin_type.color
+        info['style'] = pin_type.style
+        result.append(info)
+    
+    print(result)
+    return result
+
+def get_pin_type_by_name(name):
+    pin_type = session.query(PinType).filter_by(name=name).first()
+    if not pin_type:
+        raise ValueError(f"PinType '{name}' does not exist.")
+    
+    result = {
+        "name": pin_type.name,
+        "color": pin_type.color,
+        "style": pin_type.style,
+        "fields": []
+    }
+    
+    for field in pin_type.fields:
+        result["fields"].append({
+            "name": field.name,
+            "field_type": field.field_type,
+            "is_required": bool(field.is_required)
+        })
+    
+    return result
+
 def add_pin(pin_type_name, latitude, longitude, field_values):
     pin_type = session.query(PinType).filter_by(name=pin_type_name).first()
     if not pin_type:
@@ -133,8 +171,15 @@ def delete_pin(pin_id):
     if not pin:
         raise ValueError(f"Pin with ID '{pin_id}' does not exist.")
     
+    # Delete related FieldValue records
+    field_values = session.query(FieldValue).filter_by(pin_id=pin_id).all()
+    for field_value in field_values:
+        session.delete(field_value)
+    
+    # Delete the Pin record
     session.delete(pin)
     session.commit()
+    print(f"Pin {pin_id} deleted successfully.")
 
 
 def update_pin_type(pin_type_id, new_name=None, updated_fields=None, new_color=None, new_style=None):
