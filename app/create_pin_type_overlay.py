@@ -1,7 +1,7 @@
 import flet as ft
 from db.crud import create_pin_type
 from flet_contrib.color_picker import ColorPicker
-from dot_overlay import update_dot_position, DotOverlay
+from map_overlay import update_dot_position, DotOverlay
 
 class CreatePinTypeOverlay(ft.Column):
     def __init__(self, page: ft.Page, on_pin_type_created):

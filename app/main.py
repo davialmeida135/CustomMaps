@@ -5,9 +5,7 @@ import random
 from create_pin_type_overlay import CreatePinTypeOverlay
 from marker_overlay import MarkerOverlay
 import db.crud as pins_crud
-
-from dot_overlay import DotOverlay, update_dot_position
-
+from map_overlay import DotOverlay, update_dot_position
 import config
 
 def main(page: ft.Page):
@@ -155,7 +153,7 @@ def main(page: ft.Page):
                             ),
                         ),
                         map.TextSourceAttribution(
-                            text="Flet",
+                            text="Fletatatatatatata",
                             on_click=lambda e: e.page.launch_url("https://flet.dev"),
                         ),
                     ]
@@ -183,7 +181,7 @@ def main(page: ft.Page):
 
     global marker_layer_ref, circle_layer_ref, page_map, map_pch
     page_map, marker_layer_ref, circle_layer_ref = build_map(5, 15, 9)
-    
+     
     def build_pin_type_dropdown():
         global selected_pin_type
         pin_types = pins_crud.get_all_pin_types()
@@ -268,26 +266,26 @@ def main(page: ft.Page):
             padding=0,
             route="/",
             controls=[
-                ft.Row([ft.OutlinedButton(
-                    "request_permission",
-                    on_click=handle_permission_request,
-                ),
-                ft.Text("Click anywhere to add a Marker, right-click to add a CircleMarker."),
-                ft.ElevatedButton("Find Myself", on_click=handle_find_myself),]),
-                map_pch,
-                
+                map_pch,      
             ],
+            appbar=ft.AppBar(
+                leading=ft.IconButton(icon=ft.icons.MENU, on_click=handle_permission_request),
+                bgcolor=config.MAIN_COLOR,
+                actions=[
+                    ft.Row(
+                        [
+                        ft.IconButton(icon=ft.icons.LOCATION_SEARCHING, on_click=handle_find_myself)
+                        ]
+                ,),
+                ],
+            ),
             bottom_appbar=ft.BottomAppBar(
                         bgcolor=config.MAIN_COLOR,
                         shape=ft.NotchShape.CIRCULAR,
                         content=ft.Row(
                             controls=[
-                                ft.Container(expand=True),
                                 ft.IconButton(icon=ft.icons.ADD_CIRCLE_OUTLINE_OUTLINED, icon_color=config.ICON_COLOR, on_click=show_create_pin_type_overlay),
-                                pin_type_dropdown,
-                                ft.IconButton(icon=ft.icons.REMOVE_RED_EYE_OUTLINED, icon_color=config.ICON_COLOR,),
-                                ft.IconButton(icon=ft.icons.LOGOUT, icon_color=config.ICON_COLOR, ),
-                                
+                                pin_type_dropdown
                             ]
                         ),
                     ),

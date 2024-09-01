@@ -1,6 +1,6 @@
 import flet as ft
 from db.crud import get_pin_by_id, update_pin, delete_pin
-from dot_overlay import DotOverlay, update_dot_position
+from map_overlay import DotOverlay, update_dot_position
 import datetime
 
 class Attribute(ft.Column):

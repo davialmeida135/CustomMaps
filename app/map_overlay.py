@@ -1,5 +1,5 @@
 import flet as ft
-
+import db.crud as pins_crud
 class DotOverlay(ft.Container):
     def __init__(self):
         super().__init__(
@@ -8,13 +8,14 @@ class DotOverlay(ft.Container):
             bgcolor=ft.colors.RED,
             border_radius=ft.border_radius.all(5),
             alignment=ft.alignment.center,
-            visible=True,  # Make sure the dot is visible
+            visible=True, 
+            ignore_interactions=False,# Make sure the dot is visible
         )
 
 def update_dot_position(page, dot_overlay):
     # Define the individual margins
-    margin_top = 45
-    margin_bottom = 50
+    margin_top = 0
+    margin_bottom = 110
     margin_left = 20
     margin_right = 10
     # Calculate the map's dimensions considering the margins
@@ -28,3 +29,4 @@ def update_dot_position(page, dot_overlay):
     # Debugging the calculated positions
     print(f"Map center position: left={dot_overlay.left}, top={dot_overlay.top}")
     page.update()
+    
