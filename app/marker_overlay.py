@@ -135,9 +135,14 @@ class Attribute(ft.Column):
         
         self.controls = [self.display_view, self.edit_view]
         
-    
 
     def edit_clicked(self, e):
+        
+        def get_current_date():
+            try:
+                return datetime.datetime.strptime(self.display_field.value, '%Y-%m-%d')
+            except:
+                return datetime.datetime.now() 
         
         def handle_date_change(e):
             date = str(e.control.value).split(' ')[0]
@@ -156,13 +161,12 @@ class Attribute(ft.Column):
                           
                 self.page.open(
                     ft.DatePicker(
-                    current_date=datetime.datetime.strptime(self.display_field.value, '%Y-%m-%d'),
+                    current_date=get_current_date(),
                     on_change=handle_date_change,  
                     )
                 )
-                
             elif self.attribute_type == 'integer':
-                self.edit_field = ft.TextField(value = self.attribute_value)
+                self.edit_field.value = self.display_field.value
                 self.display_view.visible = False
                 self.edit_view.visible = True
             else:
@@ -174,7 +178,6 @@ class Attribute(ft.Column):
 
     def save_clicked(self, e):
         updated_field_values = {}
-        
         if self.editable:
             if self.attribute_type == 'integer':
                 self.attribute_value = self.edit_field.value      
@@ -266,39 +269,3 @@ class MarkerOverlay(ft.Column):
                 pin_info_list,       
         ]
 
-'''import flet as ft
-
-def build_form_display(form_template):
-    display_rows = []
-
-    # Add permanent fields to display
-    for field in form_template.permanent_fields:
-        value = field.get_value()
-        display_rows.append(ft.Text(f"{field.name}: {value}"))
-
-    # Add custom fields to display
-    for field in form_template.custom_fields:
-        value = field.get_value()
-        display_rows.append(ft.Text(f"{field.name}: {value}"))
-
-    return display_rows
-
-# Example usage
-if __name__ == "__main__":
-    form_template = FormTemplate("Example Form")
-    form_template.permanent_fields.append(PermanentField("id", "12345"))
-    form_template.permanent_fields.append(PermanentField("name", "John Doe"))
-    form_template.custom_fields.append(StringField("email"))
-    form_template.custom_fields.append(NumberField("age"))
-
-    # Fill the form with example values
-    filled_form = form_template.fill_form()
-
-    # Build the form display
-    display_rows = build_form_display(form_template)
-
-    # Create a Flet page to display the form
-    def main(page: ft.Page):
-        page.add(ft.ListView(controls=display_rows))
-
-    ft.app(target=main)'''

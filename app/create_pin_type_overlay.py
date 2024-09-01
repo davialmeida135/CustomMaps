@@ -1,9 +1,10 @@
 import flet as ft
 from db.crud import create_pin_type
 from flet_contrib.color_picker import ColorPicker
+from dot_overlay import update_dot_position, DotOverlay
 
 class CreatePinTypeOverlay(ft.Column):
-    def __init__(self, page: ft.Page):
+    def __init__(self, page: ft.Page, on_pin_type_created):
         super().__init__()
         self.page = page
         self.pin_type_name_field = ft.TextField(label="Pin Type Name", expand=True)
@@ -11,6 +12,7 @@ class CreatePinTypeOverlay(ft.Column):
         self.add_field_button = ft.IconButton(icon=ft.icons.ADD, on_click=self.add_field)
         self.save_button = ft.ElevatedButton(text="Save", on_click=self.save_pin_type)
         self.cancel_button = ft.ElevatedButton(text="Cancel", on_click=self.cancel)
+        self.on_pin_type_created = on_pin_type_created
         
         async def open_color_picker(e):
             self.page.dialog = d
@@ -42,11 +44,14 @@ class CreatePinTypeOverlay(ft.Column):
         
         self.controls = [
             ft.Text("Create New Pin Type", size=20, weight='bold'),
-            self.pin_type_name_field,
-            self.color_icon,
+            ft.Row([
+                self.pin_type_name_field,
+                self.color_icon,]),
             ft.Text("Fields", size=16, weight='bold'),
+            
             self.fields_list,
             self.add_field_button,
+            
             ft.Row(controls=[self.save_button, self.cancel_button], alignment=ft.MainAxisAlignment.END)
         ]
 
@@ -100,7 +105,7 @@ class CreatePinTypeOverlay(ft.Column):
             self.page.update()
             erro = True
         
-        
+        #Adiciona campos ao tipo de pin
         fields = []
         for field_row in self.fields_list.controls:
             
@@ -111,10 +116,13 @@ class CreatePinTypeOverlay(ft.Column):
             is_required = field_row.controls[2].value
             fields.append((field_name, field_type, is_required))
 
+        #Display dos erros
         if erro:
             print (erro)
             self.page.update()
             return
+        
+        #Criação do pin
         color = self.color_picker.color
         try:
             create_pin_type(pin_type_name, fields, color=color)
@@ -123,11 +131,20 @@ class CreatePinTypeOverlay(ft.Column):
             self.page.update()
             return
         
+        # Call the callback function to update the dropdown
+        self.on_pin_type_created()
+    
         self.page.overlay.clear()
+        dot_overlay = DotOverlay()
+        self.page.overlay.append(dot_overlay)
+        update_dot_position(self.page, dot_overlay)
         self.page.update()
 
     def cancel(self, e):
         self.page.overlay.clear()
+        dot_overlay = DotOverlay()
+        self.page.overlay.append(dot_overlay)
+        update_dot_position(self.page, dot_overlay)
         self.page.update()
         
 

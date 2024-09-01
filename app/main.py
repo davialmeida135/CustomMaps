@@ -8,6 +8,8 @@ import db.crud as pins_crud
 
 from dot_overlay import DotOverlay, update_dot_position
 
+import config
+
 def main(page: ft.Page):
     global last_center
     last_center = None
@@ -42,7 +44,7 @@ def main(page: ft.Page):
                     padding=5,
                     #width=relative_width,
                     #height=relative_height,
-                    bgcolor=ft.colors.LIGHT_BLUE_100,
+                    bgcolor=config.SECONDARY_COLOR,
                     alignment=ft.alignment.center,
                     border_radius=ft.border_radius.all(10),
                     margin=margem,
@@ -192,7 +194,13 @@ def main(page: ft.Page):
         )
         selected_pin_type = dropdown.value
         return dropdown
-
+    
+    def update_pin_type_dropdown():
+        global pin_type_dropdown
+        pin_type_dropdown.content.controls.clear()
+        pin_type_dropdown.content.controls.append(build_pin_type_dropdown())
+        page.update()
+        
     def handle_pin_type_selection(e):
         #print(e)
         global selected_pin_type
@@ -221,18 +229,20 @@ def main(page: ft.Page):
             page.update()
             
     
+    
     def show_create_pin_type_overlay(e):
         page.overlay.clear()
         page.overlay.append(
             ft.Container(
-                content=CreatePinTypeOverlay(page),
+                content=CreatePinTypeOverlay(page, on_pin_type_created=update_pin_type_dropdown),
                 padding=5,
                 width=page.width/1.5,
                 height=page.height/1.5,
-                bgcolor=ft.colors.LIGHT_BLUE_100,
+                bgcolor=config.SECONDARY_COLOR,
                 alignment=ft.alignment.center,
                 border_radius=ft.border_radius.all(10),
                 margin=ft.margin.symmetric(horizontal=page.width/4, vertical=page.height/6),
+                #border=ft.border.all(width=2, color=config.SECONDARY_DARK_COLOR),
                 shadow=ft.BoxShadow(
                     spread_radius=0.5,
                     blur_radius=5,
@@ -248,40 +258,45 @@ def main(page: ft.Page):
         expand=1,
         controls=[page_map],
     )
-    pin_type_dropdown = build_pin_type_dropdown()
+    
+    global pin_type_dropdown
+    pin_type_dropdown = ft.Container(ft.Column())
+    pin_type_dropdown.content.controls.append(build_pin_type_dropdown())
+    
     page.views.append(
         ft.View(
-            "/",
+            padding=0,
+            route="/",
             controls=[
-                ft.OutlinedButton(
+                ft.Row([ft.OutlinedButton(
                     "request_permission",
                     on_click=handle_permission_request,
                 ),
                 ft.Text("Click anywhere to add a Marker, right-click to add a CircleMarker."),
-                ft.ElevatedButton("Find Myself", on_click=handle_find_myself),
+                ft.ElevatedButton("Find Myself", on_click=handle_find_myself),]),
                 map_pch,
                 
             ],
             bottom_appbar=ft.BottomAppBar(
-                        bgcolor=ft.colors.AMBER,
+                        bgcolor=config.MAIN_COLOR,
                         shape=ft.NotchShape.CIRCULAR,
                         content=ft.Row(
                             controls=[
                                 ft.Container(expand=True),
-                                ft.IconButton(icon=ft.icons.ADD, icon_color=ft.colors.WHITE, on_click=show_create_pin_type_overlay),
+                                ft.IconButton(icon=ft.icons.ADD_CIRCLE_OUTLINE_OUTLINED, icon_color=config.ICON_COLOR, on_click=show_create_pin_type_overlay),
                                 pin_type_dropdown,
-                                ft.IconButton(icon=ft.icons.REMOVE_RED_EYE_OUTLINED, icon_color=ft.colors.WHITE,),
-                                ft.IconButton(icon=ft.icons.LOGOUT, icon_color=ft.colors.WHITE, ),
+                                ft.IconButton(icon=ft.icons.REMOVE_RED_EYE_OUTLINED, icon_color=config.ICON_COLOR,),
+                                ft.IconButton(icon=ft.icons.LOGOUT, icon_color=config.ICON_COLOR, ),
                                 
                             ]
                         ),
                     ),
             floating_action_button = ft.FloatingActionButton(icon=ft.icons.ADD, 
-                                                            bgcolor = ft.colors.AMBER,
+                                                            bgcolor = config.DARK_COLOR,
                                                             on_click=place_marker_at_center
                                                             ),
             floating_action_button_location = ft.FloatingActionButtonLocation.CENTER_DOCKED,
-            bgcolor = ft.colors.AMBER_600,
+            bgcolor = config.SECONDARY_COLOR,
 
         )
         
@@ -297,5 +312,5 @@ def main(page: ft.Page):
 
 if __name__ == "__main__":
     import logging
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     ft.app(target=main)

@@ -13,7 +13,7 @@ class DotOverlay(ft.Container):
 
 def update_dot_position(page, dot_overlay):
     # Define the individual margins
-    margin_top = 90
+    margin_top = 45
     margin_bottom = 50
     margin_left = 20
     margin_right = 10
