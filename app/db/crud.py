@@ -2,46 +2,36 @@
 from db.db import get_session
 from db.db import PinType, Pin, Field, FieldValue
 
-#from db import get_session
-#from db import PinType, Pin, Field, FieldValue
-
-session = get_session()
+database = get_session()
 
 def create_pin_type(name, fields, color=None, style="add_location"):
-    existing_pin_type = session.query(PinType).filter_by(name=name).first()
+    existing_pin_type = PinType.get_or_none(PinType.name == name)
     if existing_pin_type:
         raise ValueError(f"PinType '{name}' already exists.")
     
-    pin_type = PinType(name=name, color=color, style=style)
-    session.add(pin_type)
-    session.commit()
+    pin_type = PinType.create(name=name, color=color, style=style)
     
     for field_name, field_type, is_required in fields:
-        field = Field(pin_type_id=pin_type.id, name=field_name, field_type=field_type, is_required=is_required)
-        session.add(field)
+        Field.create(pin_type=pin_type, name=field_name, field_type=field_type, is_required=is_required)
     
-    session.commit()
     return pin_type
 
 def get_all_pin_types():
-    pin_types = session.query(PinType).all()
-    print('==============================================')
-    print(pin_types)
+    pin_types = PinType.select()
     result = []
     
     for pin_type in pin_types:
-        print(pin_type.name)
-        info = {}
-        info['name'] = pin_type.name
-        info['color'] = pin_type.color
-        info['style'] = pin_type.style
+        info = {
+            'name': pin_type.name,
+            'color': pin_type.color,
+            'style': pin_type.style
+        }
         result.append(info)
     
-    print(result)
     return result
 
 def get_pin_type_by_name(name):
-    pin_type = session.query(PinType).filter_by(name=name).first()
+    pin_type = PinType.get_or_none(PinType.name == name)
     if not pin_type:
         raise ValueError(f"PinType '{name}' does not exist.")
     
@@ -62,27 +52,23 @@ def get_pin_type_by_name(name):
     return result
 
 def add_pin(pin_type_name, latitude, longitude, field_values):
-    pin_type = session.query(PinType).filter_by(name=pin_type_name).first()
+    pin_type = PinType.get_or_none(PinType.name == pin_type_name)
     if not pin_type:
         raise ValueError(f"PinType '{pin_type_name}' does not exist.")
     
-    pin = Pin(pin_type_id=pin_type.id, latitude=latitude, longitude=longitude,)
-    session.add(pin)
-    session.commit()
+    pin = Pin.create(pin_type=pin_type, latitude=latitude, longitude=longitude)
     
     for field_name, value in field_values.items():
-        field = session.query(Field).filter_by(pin_type_id=pin_type.id, name=field_name).first()
+        field = Field.get_or_none((Field.pin_type == pin_type) & (Field.name == field_name))
         if not field:
             raise ValueError(f"Field '{field_name}' does not exist for PinType '{pin_type_name}'.")
         
-        field_value = FieldValue(pin_id=pin.id, field_id=field.id, value=value)
-        session.add(field_value)
+        FieldValue.create(pin=pin, field=field, value=value)
     
-    session.commit()
     return pin
 
 def get_pin_by_id(pin_id):
-    pin = session.query(Pin).filter_by(id=pin_id).first()
+    pin = Pin.get_or_none(Pin.id == pin_id)
     if not pin:
         raise ValueError(f"Pin with id '{pin_id}' does not exist.")
     
@@ -97,20 +83,19 @@ def get_pin_by_id(pin_id):
     }
     
     for field_value in pin.field_values:
-        field = session.query(Field).filter_by(id=field_value.field_id).first()
-        pin_data["fields"][field.name] = {
+        pin_data["fields"][field_value.field.name] = {
             "value": field_value.value,
-            "type": field.field_type
+            "type": field_value.field.field_type
         }
     
     return pin_data
 
 def get_pins(pin_type_name):
-    pin_type = session.query(PinType).filter_by(name=pin_type_name).first()
+    pin_type = PinType.get_or_none(PinType.name == pin_type_name)
     if not pin_type:
         raise ValueError(f"PinType '{pin_type_name}' does not exist.")
     
-    pins = session.query(Pin).filter_by(pin_type_id=pin_type.id).all()
+    pins = Pin.select().where(Pin.pin_type == pin_type)
     result = []
     for pin in pins:
         pin_data = {
@@ -120,14 +105,13 @@ def get_pins(pin_type_name):
             "fields": {}
         }
         for field_value in pin.field_values:
-            field = session.query(Field).filter_by(id=field_value.field_id).first()
-            pin_data["fields"][field.name] = field_value.value
+            pin_data["fields"][field_value.field.name] = field_value.value
         result.append(pin_data)
     
     return result
 
 def get_all_pins():
-    pins = session.query(Pin).all()
+    pins = Pin.select()
     result = []
     for pin in pins:
         pin_data = {
@@ -140,114 +124,65 @@ def get_all_pins():
             "fields": {}
         }
         for field_value in pin.field_values:
-            field = session.query(Field).filter_by(id=field_value.field_id).first()
-            pin_data["fields"][field.name] = field_value.value
+            pin_data["fields"][field_value.field.name] = field_value.value
         result.append(pin_data)
     
     return result
 
 def update_pin(pin_id, updated_field_values):
-    pin = session.query(Pin).filter_by(id=pin_id).first()
+    pin = Pin.get_or_none(Pin.id == pin_id)
     if not pin:
         raise ValueError(f"Pin with ID '{pin_id}' does not exist.")
     
     for field_name, new_value in updated_field_values.items():
-        field = session.query(Field).filter_by(pin_type_id=pin.pin_type_id, name=field_name).first()
+        field = Field.get_or_none((Field.pin_type == pin.pin_type) & (Field.name == field_name))
         if not field:
-            raise ValueError(f"Field '{field_name}' does not exist for PinType ID '{pin.pin_type_id}'.")
+            raise ValueError(f"Field '{field_name}' does not exist for PinType ID '{pin.pin_type.id}'.")
         
-        field_value = session.query(FieldValue).filter_by(pin_id=pin.id, field_id=field.id).first()
+        field_value = FieldValue.get_or_none((FieldValue.pin == pin) & (FieldValue.field == field))
         if field_value:
             field_value.value = new_value
+            field_value.save()
         else:
-            field_value = FieldValue(pin_id=pin.id, field_id=field.id, value=new_value)
-            session.add(field_value)
+            FieldValue.create(pin=pin, field=field, value=new_value)
     
-    session.commit()
     return pin
 
 def delete_pin(pin_id):
-    pin = session.query(Pin).filter_by(id=pin_id).first()
+    pin = Pin.get_or_none(Pin.id == pin_id)
     if not pin:
         raise ValueError(f"Pin with ID '{pin_id}' does not exist.")
     
-    # Delete related FieldValue records
-    field_values = session.query(FieldValue).filter_by(pin_id=pin_id).all()
-    for field_value in field_values:
-        session.delete(field_value)
-    
-    # Delete the Pin record
-    session.delete(pin)
-    session.commit()
+    pin.delete_instance(recursive=True)
     print(f"Pin {pin_id} deleted successfully.")
 
-
 def update_pin_type(pin_type_id, new_name=None, updated_fields=None, new_color=None, new_style=None):
-    """
-    Updates the name, fields, color, and style of an existing PinType.
-
-    :param pin_type_id: The ID of the PinType to update.
-    :param new_name: The new name for the PinType (optional).
-    :param updated_fields: A list of dictionaries containing the field updates.
-                           Each dictionary should have 'id', 'name', 'field_type', and 'is_required'.
-                           If 'id' is None, a new field is created.
-                           If a field with 'id' is found, it's updated.
-                           To delete a field, remove it from the list.
-    :param new_color: The new color for the PinType (optional).
-    :param new_style: The new style for the PinType (optional).
-    :return: The updated PinType object.
-    """
-    pin_type = session.query(PinType).filter_by(id=pin_type_id).first()
-    
+    pin_type = PinType.get_or_none(PinType.id == pin_type_id)
     if not pin_type:
         raise ValueError(f"PinType with ID '{pin_type_id}' does not exist.")
     
-    # Update the name if provided
     if new_name:
         pin_type.name = new_name
-    
-    # Update the color if provided
     if new_color:
         pin_type.color = new_color
-    
-    # Update the style if provided
     if new_style:
         pin_type.style = new_style
+    pin_type.save()
     
-    # Update or add new fields
-    existing_field_ids = {field.id for field in pin_type.fields}
-    
-    for field_data in updated_fields or []:
-        field_id = field_data.get('id')
-        field_name = field_data['name']
-        field_type = field_data['field_type']
-        is_required = field_data['is_required']
-        
-        if field_id:  # Update existing field
-            if field_id in existing_field_ids:
-                field = session.query(Field).filter_by(id=field_id).first()
-                field.name = field_name
-                field.field_type = field_type
-                field.is_required = is_required
-                existing_field_ids.remove(field_id)
+    if updated_fields is not None:
+        existing_fields = {field.id: field for field in pin_type.fields}
+        for field_data in updated_fields:
+            field_id = field_data.get('id')
+            if field_id and field_id in existing_fields:
+                field = existing_fields[field_id]
+                field.name = field_data['name']
+                field.field_type = field_data['field_type']
+                field.is_required = field_data['is_required']
+                field.save()
             else:
-                raise ValueError(f"Field with ID '{field_id}' does not exist for PinType '{pin_type.name}'.")
-        else:  # Add new field
-            new_field = Field(
-                pin_type_id=pin_type.id,
-                name=field_name,
-                field_type=field_type,
-                is_required=is_required
-            )
-            session.add(new_field)
-    
-    # Remove fields not in updated_fields
-    for field_id in existing_field_ids:
-        field_to_delete = session.query(Field).filter_by(id=field_id).first()
-        session.delete(field_to_delete)
-    
-    session.commit()
+                Field.create(pin_type=pin_type, name=field_data['name'], field_type=field_data['field_type'], is_required=field_data['is_required'])
+        
+        for field_id in set(existing_fields) - {field_data.get('id') for field_data in updated_fields}:
+            existing_fields[field_id].delete_instance()
     
     return pin_type
-
-
