@@ -162,3 +162,5 @@ cython_debug/
 test.py
 test2.py
 /builds
+test3.py
+/geoapp

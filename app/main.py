@@ -8,14 +8,14 @@ import db.crud as pins_crud
 from map_overlay import DotOverlay, update_dot_position
 import config
 
-def main(page: ft.Page):
+async def main(page: ft.Page):
     global last_center
     last_center = None
     dot_overlay = DotOverlay()
-    gl = ft.Geolocator()
-    page.add(gl)
     global selected_pin_type
-    selected_pin_type = None
+    pin_types = pins_crud.get_all_pin_types()
+    selected_pin_type = pin_types[0]
+    
     
     class CustomMarker(map.Marker):
         def __init__(self, coordinates, id, color):
@@ -73,10 +73,10 @@ def main(page: ft.Page):
             marker_layer_ref.current.markers.append(marker)
 
         print("Loaded pins!")
-        #page.update()
-
+        page.update()
     def handle_permission_request(e):
-        page.add(ft.Text(f"request_permission: {gl.request_permission()}"))  
+        global gl
+        page.add(ft.Text(f"request_permission: {gl.request_permission()}")) 
 
     # Create dot overlay with initial position
     def update_dot_event(e):
@@ -92,7 +92,7 @@ def main(page: ft.Page):
             
     def generate_empty_fields():
         global selected_pin_type
-        fields = pins_crud.get_pin_type_by_name(selected_pin_type)['fields']
+        fields = pins_crud.get_pin_type_by_name(selected_pin_type['name'])['fields']
         empty_fields = {}
         for field in fields:
             empty_fields[field['name']] = ""
@@ -104,11 +104,11 @@ def main(page: ft.Page):
         
         if marker_layer_ref.current:
             if last_center is not None:        
-                place_pin(selected_pin_type, last_center.latitude, last_center.longitude, fields )
+                place_pin(selected_pin_type['name'], last_center.latitude, last_center.longitude, fields )
                 page.update()
             else:
                 center = page_map.configuration.initial_center
-                place_pin(selected_pin_type, center.latitude, center.longitude,{})
+                place_pin(selected_pin_type['name'], center.latitude, center.longitude,{})
                 page.update()
                 
     def handle_event(e: map.MapEvent):
@@ -153,7 +153,7 @@ def main(page: ft.Page):
                             ),
                         ),
                         map.TextSourceAttribution(
-                            text="Fletatatatatatata",
+                            text="Flet",
                             on_click=lambda e: e.page.launch_url("https://flet.dev"),
                         ),
                     ]
@@ -179,32 +179,54 @@ def main(page: ft.Page):
         )
         return page_map, marker_layer_ref, circle_layer_ref
 
-    global marker_layer_ref, circle_layer_ref, page_map, map_pch
-    page_map, marker_layer_ref, circle_layer_ref = build_map(5, 15, 9)
+    
+    
+    def build_pin_type_menu_items():
+        pin_types = pins_crud.get_all_pin_types()
+        print("================================================")
+        #print(pin_types)
+        menu_items = []
+        for pin_type in pin_types:
+            menu_items.append(
+                ft.PopupMenuItem(
+                    content=ft.Row([ft.Icon(name=pin_type['style'], color=pin_type['color']),
+                                   ft.Text(value= pin_type['name'])]),
+                    on_click=lambda e, pin_type=pin_type: handle_pin_type_selection(pin_type)
+                )
+            )
+        
+        return menu_items
      
-    def build_pin_type_dropdown():
+    def build_pin_type_popup_button():
         global selected_pin_type
         pin_types = pins_crud.get_all_pin_types()
-        dropdown = ft.Dropdown(
-            options=[ft.dropdown.Option(text=pin_type['name']) for pin_type in pin_types],
-            on_change=handle_pin_type_selection,
-            value=pin_types[0]['name'] if pin_types else None,
-        )
-        selected_pin_type = dropdown.value
-        return dropdown
+        if pin_types:
+            popup_button = ft.PopupMenuButton(
+                content=ft.Row([ft.Icon(name=selected_pin_type['style'], color=selected_pin_type['color']),
+                                   ft.Text(value= selected_pin_type['name'],color=config.ICON_COLOR,weight=ft.FontWeight.BOLD)]),
+
+                items=build_pin_type_menu_items()
+            )
+            return popup_button
+        return None
     
     def update_pin_type_dropdown():
         global pin_type_dropdown
         pin_type_dropdown.content.controls.clear()
-        pin_type_dropdown.content.controls.append(build_pin_type_dropdown())
+        pin_type_dropdown.content.controls.append(build_pin_type_popup_button())
         page.update()
         
-    def handle_pin_type_selection(e):
-        #print(e)
+    def handle_pin_type_selection(pin_type):
+        #print(pin_type)
         global selected_pin_type
-        selected_pin_type = e.data
+        
+        selected_pin_type = pin_type
         print(f"Selected pin type: {selected_pin_type}")
+        update_pin_type_dropdown()
 
+    global marker_layer_ref, circle_layer_ref, page_map, map_pch
+    page_map, marker_layer_ref, circle_layer_ref = build_map(5, 15, 9)    
+    
     def handle_find_myself(e):
         global marker_layer_ref, circle_layer_ref
         p = gl.get_current_position(ft.GeolocatorPositionAccuracy.BEST)
@@ -234,12 +256,12 @@ def main(page: ft.Page):
             ft.Container(
                 content=CreatePinTypeOverlay(page, on_pin_type_created=update_pin_type_dropdown),
                 padding=5,
-                width=page.width/1.5,
-                height=page.height/1.5,
+                width=page.width,
+                height=page.height,
                 bgcolor=config.SECONDARY_COLOR,
                 alignment=ft.alignment.center,
                 border_radius=ft.border_radius.all(10),
-                margin=ft.margin.symmetric(horizontal=page.width/4, vertical=page.height/6),
+                margin=ft.margin.symmetric(horizontal=10, vertical=30),
                 #border=ft.border.all(width=2, color=config.SECONDARY_DARK_COLOR),
                 shadow=ft.BoxShadow(
                     spread_radius=0.5,
@@ -258,8 +280,16 @@ def main(page: ft.Page):
     )
     
     global pin_type_dropdown
-    pin_type_dropdown = ft.Container(ft.Column())
-    pin_type_dropdown.content.controls.append(build_pin_type_dropdown())
+    
+    pin_type_dropdown = ft.Container(ft.Row())
+    pin_type_dropdown.content.controls.append(build_pin_type_popup_button())
+    update_pin_type_dropdown()
+    
+    global location_text 
+    location_text= ft.Text(color = 'black')
+    
+    global permission_text
+    permission_text = ft.Text(color = 'black')
     
     page.views.append(
         ft.View(
@@ -269,11 +299,13 @@ def main(page: ft.Page):
                 map_pch,      
             ],
             appbar=ft.AppBar(
-                leading=ft.IconButton(icon=ft.icons.MENU, on_click=handle_permission_request),
+                #leading=ft.IconButton(icon=ft.icons.MENU, on_click=handle_permission_request),
                 bgcolor=config.MAIN_COLOR,
                 actions=[
                     ft.Row(
                         [
+                        location_text,
+                        ft.IconButton(icon=ft.icons.MESSAGE, on_click=handle_permission_request),
                         ft.IconButton(icon=ft.icons.LOCATION_SEARCHING, on_click=handle_find_myself)
                         ]
                 ,),
@@ -285,7 +317,8 @@ def main(page: ft.Page):
                         content=ft.Row(
                             controls=[
                                 ft.IconButton(icon=ft.icons.ADD_CIRCLE_OUTLINE_OUTLINED, icon_color=config.ICON_COLOR, on_click=show_create_pin_type_overlay),
-                                pin_type_dropdown
+                                pin_type_dropdown,
+                                permission_text
                             ]
                         ),
                     ),
