@@ -74,6 +74,11 @@ async def main(page: ft.Page):
 
         print("Loaded pins!")
         page.update()
+        
+    global gl
+    gl = ft.Geolocator()
+    page.add(gl)
+    
     def handle_permission_request(e):
         global gl
         page.add(ft.Text(f"request_permission: {gl.request_permission()}")) 
@@ -131,7 +136,7 @@ async def main(page: ft.Page):
                 initial_center=map.MapLatitudeLongitude(latitude, longitude),
                 initial_zoom=zoom,
                 interaction_configuration=map.MapInteractionConfiguration(
-                    flags=map.MapInteractiveFlag.ALL
+                flags=map.MapInteractiveFlag.DRAG | map.MapInteractiveFlag.PINCH_ZOOM
                 ),
                 on_init=lambda e: print(f"Initialized Map"),
                 #on_tap=handle_tap,
@@ -228,28 +233,23 @@ async def main(page: ft.Page):
     page_map, marker_layer_ref, circle_layer_ref = build_map(5, 15, 9)    
     
     def handle_find_myself(e):
-        global marker_layer_ref, circle_layer_ref
-        p = gl.get_current_position(ft.GeolocatorPositionAccuracy.BEST)
-        if marker_layer_ref.current:
-            marker_layer_ref.current.markers.append(
-                map.Marker(
-                    content=ft.Icon(
-                        ft.icons.MY_LOCATION, color=ft.colors.BLUE
-                    ),
-                    coordinates=map.MapLatitudeLongitude(p.latitude, p.longitude),
-                )
-            )
-            # Update the map's center to the current position
-            print(f"Found Myself: ({p.latitude}, {p.longitude})")
-            # Rebuild the map component
-            map_pch.controls.clear()
-            page_map, marker_layer_ref, circle_layer_ref = build_map(13, p.latitude, p.longitude)
-            map_pch.controls.append(page_map)
-            load_pins()
+        global marker_layer_ref, circle_layer_ref,gl
+        try:
+            p = gl.get_current_position(ft.GeolocatorPositionAccuracy.BEST_FOR_NAVIGATION)
+            if marker_layer_ref.current:
+                # Update the map's center to the current position
+                print(f"Found Myself: ({p.latitude}, {p.longitude})")
+                # Rebuild the map component
+                map_pch.controls.clear()
+                page_map, marker_layer_ref, circle_layer_ref = build_map(16, p.latitude, p.longitude)
+                map_pch.controls.append(page_map)
+                page.update()
+                load_pins()
+                page.update()
+        except Exception as e:
+            print(f"Error: {e}")
             page.update()
-            
-    
-    
+              
     def show_create_pin_type_overlay(e):
         page.overlay.clear()
         page.overlay.append(
@@ -285,12 +285,6 @@ async def main(page: ft.Page):
     pin_type_dropdown.content.controls.append(build_pin_type_popup_button())
     update_pin_type_dropdown()
     
-    global location_text 
-    location_text= ft.Text(color = 'black')
-    
-    global permission_text
-    permission_text = ft.Text(color = 'black')
-    
     page.views.append(
         ft.View(
             padding=0,
@@ -304,7 +298,7 @@ async def main(page: ft.Page):
                 actions=[
                     ft.Row(
                         [
-                        location_text,
+                        
                         ft.IconButton(icon=ft.icons.MESSAGE, on_click=handle_permission_request),
                         ft.IconButton(icon=ft.icons.LOCATION_SEARCHING, on_click=handle_find_myself)
                         ]
@@ -318,7 +312,7 @@ async def main(page: ft.Page):
                             controls=[
                                 ft.IconButton(icon=ft.icons.ADD_CIRCLE_OUTLINE_OUTLINED, icon_color=config.ICON_COLOR, on_click=show_create_pin_type_overlay),
                                 pin_type_dropdown,
-                                permission_text
+                                
                             ]
                         ),
                     ),
