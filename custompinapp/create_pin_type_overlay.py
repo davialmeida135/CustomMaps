@@ -138,14 +138,14 @@ class CreatePinTypeOverlay(ft.Column):
         dot_overlay = DotOverlay()
         self.page.overlay.append(dot_overlay)
         update_dot_position(self.page, dot_overlay)
-        self.page.update()
+        #self.page.update()
 
     def cancel(self, e):
         self.page.overlay.clear()
         dot_overlay = DotOverlay()
         self.page.overlay.append(dot_overlay)
         update_dot_position(self.page, dot_overlay)
-        self.page.update()
+        #self.page.update()
         
 
 '''def main(page: ft.Page):

@@ -1,12 +1,16 @@
 from peewee import (
     Model, SqliteDatabase, IntegerField, FloatField, TextField, ForeignKeyField, CharField
 )
-from pathlib import Path
+import os
 
 # Define the database path and initialize the database
-base_dir = Path(__file__).resolve().parent
-db_path = base_dir / 'map_pins.db'
+path = os.path.abspath(__file__)
+path = os.path.dirname(path)
+path = os.path.dirname(path)
+path = os.path.dirname(path)
+db_path = os.path.join(path, 'map_pins.db')
 database = SqliteDatabase(db_path)
+print(db_path)
 
 class BaseModel(Model):
     class Meta:
@@ -37,5 +41,19 @@ class FieldValue(BaseModel):
 database.connect()
 database.create_tables([PinType, Field, Pin, FieldValue])
 
+# Create the "Default" pin type with name and date fields
+def create_default_pin_type():
+    default_pin_type, created = PinType.get_or_create(
+        name="Default",
+        defaults={"color": "36aedc", "style": "add_location"}
+    )
+    if created:
+        Field.create(pin_type=default_pin_type, name="Name", field_type="string", is_required=1)
+        Field.create(pin_type=default_pin_type, name="Date", field_type="date", is_required=1)
+        print("Default pin type and fields created.")
+    else:
+        print("Default pin type already exists.")
+
+create_default_pin_type()
 def get_session():
     return database

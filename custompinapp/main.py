@@ -16,7 +16,6 @@ async def main(page: ft.Page):
     pin_types = pins_crud.get_all_pin_types()
     selected_pin_type = pin_types[0]
     
-    
     class CustomMarker(map.Marker):
         def __init__(self, coordinates, id, color):
             super().__init__(coordinates=coordinates, content=None)
@@ -57,7 +56,7 @@ async def main(page: ft.Page):
             )
 
             page.update()
-  
+
 
         def __str__(self):
             return f"CustomMarker({self.coordinates})"
@@ -78,10 +77,6 @@ async def main(page: ft.Page):
     global gl
     gl = ft.Geolocator()
     page.add(gl)
-    
-    def handle_permission_request(e):
-        global gl
-        page.add(ft.Text(f"request_permission: {gl.request_permission()}")) 
 
     # Create dot overlay with initial position
     def update_dot_event(e):
@@ -123,6 +118,8 @@ async def main(page: ft.Page):
             if e.source == map.MapEventSource.DRAG_END or e.source == map.MapEventSource.SCROLL_WHEEL:
                 global last_center
                 last_center = e.center
+            if e.source == map.MapEventSource.NON_ROTATED_SIZE_CHANGE:
+                update_dot_position(page, dot_overlay)
                 
     def build_map(zoom, latitude, longitude):
         marker_layer_ref = ft.Ref[map.MarkerLayer]()
@@ -195,20 +192,21 @@ async def main(page: ft.Page):
             menu_items.append(
                 ft.PopupMenuItem(
                     content=ft.Row([ft.Icon(name=pin_type['style'], color=pin_type['color']),
-                                   ft.Text(value= pin_type['name'])]),
+                                ft.Text(value= pin_type['name'])]),
                     on_click=lambda e, pin_type=pin_type: handle_pin_type_selection(pin_type)
                 )
             )
         
         return menu_items
-     
+    
     def build_pin_type_popup_button():
         global selected_pin_type
         pin_types = pins_crud.get_all_pin_types()
+        #selected_pin_type = pin_types[0]
         if pin_types:
             popup_button = ft.PopupMenuButton(
                 content=ft.Row([ft.Icon(name=selected_pin_type['style'], color=selected_pin_type['color']),
-                                   ft.Text(value= selected_pin_type['name'],color=config.ICON_COLOR,weight=ft.FontWeight.BOLD)]),
+                                ft.Text(value= selected_pin_type['name'],color=config.ICON_COLOR,weight=ft.FontWeight.BOLD)]),
 
                 items=build_pin_type_menu_items()
             )
@@ -235,6 +233,9 @@ async def main(page: ft.Page):
     def handle_find_myself(e):
         global marker_layer_ref, circle_layer_ref,gl
         try:
+            if gl.get_permission_status() == ft.GeolocatorPermissionStatus.DENIED or gl.get_permission_status() == ft.GeolocatorPermissionStatus.DENIED_FOREVER:
+                gl.request_permission()
+                page.update()
             p = gl.get_current_position(ft.GeolocatorPositionAccuracy.BEST_FOR_NAVIGATION)
             if marker_layer_ref.current:
                 # Update the map's center to the current position
@@ -249,7 +250,7 @@ async def main(page: ft.Page):
         except Exception as e:
             print(f"Error: {e}")
             page.update()
-              
+            
     def show_create_pin_type_overlay(e):
         page.overlay.clear()
         page.overlay.append(
@@ -279,6 +280,46 @@ async def main(page: ft.Page):
         controls=[page_map],
     )
     
+    def show_delete_confirmation():
+        def on_confirm(e):
+            try:
+                global selected_pin_type
+                if selected_pin_type['name'] == 'Default':
+                    page.dialog.open = False
+                    page.update()
+                    return
+                
+                pins_crud.delete_pin_type_and_pins(selected_pin_type['name'])
+                page.dialog.open = False
+                page.update()
+                # Optionally, update the UI to reflect the deletion
+                pin_types = pins_crud.get_all_pin_types()
+                if pin_types:
+                    selected_pin_type = pin_types[0]
+                
+                update_pin_type_dropdown()
+                load_pins()
+            except ValueError as err:
+                print(err)
+        
+        def on_cancel(e):
+            page.dialog.open = False
+            page.update()
+
+        confirmation_dialog = ft.AlertDialog(
+            title=ft.Text("Confirm Deletion"),
+            content=ft.Text("Are you sure you want to delete this pin type and all associated pins?"),
+            actions=[
+                ft.TextButton("Cancel", on_click=on_cancel),
+                ft.TextButton("Delete", on_click=on_confirm),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
+        page.dialog = confirmation_dialog
+        page.dialog.open = True
+        page.update()
+    
     global pin_type_dropdown
     
     pin_type_dropdown = ft.Container(ft.Row())
@@ -298,8 +339,6 @@ async def main(page: ft.Page):
                 actions=[
                     ft.Row(
                         [
-                        
-                        ft.IconButton(icon=ft.icons.MESSAGE, on_click=handle_permission_request),
                         ft.IconButton(icon=ft.icons.LOCATION_SEARCHING, on_click=handle_find_myself)
                         ]
                 ,),
@@ -312,6 +351,7 @@ async def main(page: ft.Page):
                             controls=[
                                 ft.IconButton(icon=ft.icons.ADD_CIRCLE_OUTLINE_OUTLINED, icon_color=config.ICON_COLOR, on_click=show_create_pin_type_overlay),
                                 pin_type_dropdown,
+                                ft.IconButton(icon=ft.icons.DELETE, icon_color=ft.colors.RED, on_click=lambda e: show_delete_confirmation()),
                                 
                             ]
                         ),
@@ -338,4 +378,4 @@ async def main(page: ft.Page):
 if __name__ == "__main__":
     import logging
     logging.basicConfig(level=logging.INFO)
-    ft.app(target=main)
+    ft.app(target=main, name = 'CustomPins')

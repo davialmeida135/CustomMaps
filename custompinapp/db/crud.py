@@ -186,3 +186,17 @@ def update_pin_type(pin_type_id, new_name=None, updated_fields=None, new_color=N
             existing_fields[field_id].delete_instance()
     
     return pin_type
+
+def delete_pin_type_and_pins(pin_type_name, map_id=0):
+    pin_type = PinType.get_or_none(PinType.name == pin_type_name)
+    if not pin_type:
+        raise ValueError(f"PinType with ID '{pin_type_name}' does not exist.")
+    
+    # Delete all pins of this type
+    pins = Pin.select().where(Pin.pin_type == pin_type)
+    for pin in pins:
+        pin.delete_instance(recursive=True)
+    
+    # Delete the pin type
+    pin_type.delete_instance()
+    print(f"PinType {pin_type_name} and all associated pins deleted successfully.")
