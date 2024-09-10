@@ -26,13 +26,9 @@ async def main(page: ft.Page):
             
         def handle_marker_click(self, e):
             if page.width > page.height:
-                margem = ft.margin.symmetric(horizontal=page.width/4, vertical=page.height/6)
-                relative_width = page.width/2
-                relative_height = page.height/3
+                margem = ft.margin.symmetric(horizontal=page.width/4, vertical=page.height/6)                
             else:
-                margem = ft.margin.symmetric(horizontal=page.width/10, vertical=page.height/6)
-                relative_width = page.width/1.2
-                relative_height = page.height/2
+                margem = ft.margin.symmetric(horizontal=page.width/10, vertical=page.height/6)               
 
             page.overlay.clear()
             page.overlay.append(
@@ -120,6 +116,7 @@ async def main(page: ft.Page):
                 last_center = e.center
             if e.source == map.MapEventSource.NON_ROTATED_SIZE_CHANGE:
                 update_dot_position(page, dot_overlay)
+                last_center = e.center
                 
     def build_map(zoom, latitude, longitude):
         marker_layer_ref = ft.Ref[map.MarkerLayer]()
@@ -133,8 +130,17 @@ async def main(page: ft.Page):
                 initial_center=map.MapLatitudeLongitude(latitude, longitude),
                 initial_zoom=zoom,
                 interaction_configuration=map.MapInteractionConfiguration(
-                flags=map.MapInteractiveFlag.DRAG | map.MapInteractiveFlag.PINCH_ZOOM
-                ),
+                    flags=map.MapInteractiveFlag.NONE 
+                        | map.MapInteractiveFlag.DRAG
+                        | map.MapInteractiveFlag.PINCH_ZOOM,
+                    rotation_threshold=0.5,
+                    rotation_win_gestures=map.MapMultiFingerGesture.NONE,
+                    #scroll_wheel_velocity=5.0,
+                    enable_multi_finger_gesture_race=1,
+                    pinch_move_win_gestures=map.MapMultiFingerGesture.NONE,
+                    pinch_zoom_win_gestures=map.MapMultiFingerGesture.PINCH_ZOOM,
+                    
+                    ),
                 on_init=lambda e: print(f"Initialized Map"),
                 #on_tap=handle_tap,
                 #on_secondary_tap=handle_tap,
@@ -346,8 +352,9 @@ async def main(page: ft.Page):
             ),
             bottom_appbar=ft.BottomAppBar(
                         bgcolor=config.MAIN_COLOR,
-                        shape=ft.NotchShape.CIRCULAR,
+                        shape=ft.NotchShape.AUTO,
                         content=ft.Row(
+                            spacing=3,
                             controls=[
                                 ft.IconButton(icon=ft.icons.ADD_CIRCLE_OUTLINE_OUTLINED, icon_color=config.ICON_COLOR, on_click=show_create_pin_type_overlay),
                                 pin_type_dropdown,
@@ -374,6 +381,13 @@ async def main(page: ft.Page):
     page.on_resize = update_dot_event
     load_pins()
     page.update()
+    if map_pch.controls:
+        map_control = map_pch.controls[0]
+        if isinstance(map_control, map.Map):
+            print(f"Map flags: {map_control.configuration.interaction_configuration.flags}")
+            map_control.configuration.interaction_configuration.flags = map.MapInteractiveFlag.NONE
+            print(f"Map flags: {map_control.configuration.interaction_configuration.flags}")
+
 
 if __name__ == "__main__":
     import logging
