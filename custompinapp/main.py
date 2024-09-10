@@ -1,3 +1,12 @@
+"""
+Main module for the Custom Pins application.
+
+This module initializes the Flet application and sets up the main page with various components and functionalities.
+
+Functions:
+    main(page: ft.Page): Asynchronous function to initialize the main page of the application.
+"""
+
 from time import sleep
 import flet as ft
 import flet_core.map as map
@@ -9,6 +18,12 @@ from map_overlay import DotOverlay, update_dot_position
 import config
 
 async def main(page: ft.Page):
+    """
+    Initialize the main page of the application.
+
+    Args:
+        page (ft.Page): The main page object provided by Flet.
+    """
     global last_center
     last_center = None
     dot_overlay = DotOverlay()
@@ -17,6 +32,15 @@ async def main(page: ft.Page):
     selected_pin_type = pin_types[0]
     
     class CustomMarker(map.Marker):
+        """
+        Custom marker class for the map.
+
+        Attributes:
+            coordinates (map.MapLatitudeLongitude): The coordinates of the marker.
+            id (int): The unique identifier of the marker.
+            color (str): The color of the marker.
+        """
+        
         def __init__(self, coordinates, id, color):
             super().__init__(coordinates=coordinates, content=None)
             self.color = color
@@ -25,6 +49,14 @@ async def main(page: ft.Page):
             self.content = ft.IconButton('add_location',on_click=self.handle_marker_click, icon_color=self.color)
             
         def handle_marker_click(self, e):
+            """
+            Handle the click event on a marker.
+            Parameters:
+            - e: The event object representing the click event.
+            Returns:
+            None
+            """
+            
             if page.width > page.height:
                 margem = ft.margin.symmetric(horizontal=page.width/4, vertical=page.height/6)                
             else:
@@ -76,17 +108,39 @@ async def main(page: ft.Page):
 
     # Create dot overlay with initial position
     def update_dot_event(e):
+        """
+        Event handler to update the dot position on the map.
+
+        Args:
+            e: The event object.
+        """
         print("update dot position")
         update_dot_position(page, dot_overlay)
 
     def place_pin(type,lat,lng,fields, color = "ff0000"):
-            # Add a new pin to the database
-            pin = pins_crud.add_pin(type,lat,lng,fields)
-            # Add a new marker to the map
-            marker_layer_ref.current.markers.append(CustomMarker(map.MapLatitudeLongitude(pin.latitude, pin.longitude), pin.id,pin.pin_type.color))
-            page.update()
+        """
+        Add a new pin to the database and place a marker on the map.
+
+        Args:
+            type (str): The type of the pin.
+            lat (float): The latitude of the pin.
+            lng (float): The longitude of the pin.
+            fields (dict): A dictionary of field values associated with the pin.
+            color (str, optional): The color of the pin marker. Defaults to "ff0000".
+        """
+        # Add a new pin to the database
+        pin = pins_crud.add_pin(type,lat,lng,fields)
+        # Add a new marker to the map
+        marker_layer_ref.current.markers.append(CustomMarker(map.MapLatitudeLongitude(pin.latitude, pin.longitude), pin.id,pin.pin_type.color))
+        page.update()
             
     def generate_empty_fields():
+        """
+        Generate a dictionary of empty fields for the selected pin type.
+
+        Returns:
+            dict: A dictionary with field names as keys and empty strings as values.
+        """
         global selected_pin_type
         fields = pins_crud.get_pin_type_by_name(selected_pin_type['name'])['fields']
         empty_fields = {}
@@ -95,6 +149,12 @@ async def main(page: ft.Page):
         return empty_fields
         
     def place_marker_at_center(e):
+        """
+        Place a marker at the center of the map with the selected pin type.
+
+        Args:
+            e: The event object.
+        """
         global selected_pin_type
         fields = generate_empty_fields()
         

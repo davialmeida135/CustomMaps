@@ -1,10 +1,40 @@
-# crud.py
+"""
+CRUD operations for the Custom Pins application.
+
+This module provides functions for creating, reading, updating, and deleting pin types, pins, and their associated fields and values.
+
+Functions:
+    create_pin_type(name, fields, color=None, style="add_location"): Create a new pin type.
+    get_all_pin_types(): Get all pin types.
+    get_pin_type_by_name(name): Get a pin type by its name.
+    add_pin(pin_type_name, latitude, longitude, field_values): Add a new pin.
+    get_pin_by_id(pin_id): Get a pin by its ID.
+    get_pins(pin_type_name): Get all pins of a specific pin type.
+    get_all_pins(): Get all pins.
+    update_pin(pin_id, updated_field_values): Update a pin.
+    delete_pin(pin_id): Delete a pin.
+    update_pin_type(pin_type_id, new_name=None, updated_fields=None, new_color=None, new_style=None): Update a pin type.
+    delete_pin_type_and_pins(pin_type_name, map_id=0): Delete a pin type and all associated pins.
+"""
 from db.db import get_session
 from db.db import PinType, Pin, Field, FieldValue
 
 database = get_session()
 
+
 def create_pin_type(name, fields, color=None, style="add_location"):
+    """
+    Create a new pin type.
+
+    Args:
+        name (str): The name of the pin type.
+        fields (list): A list of fields associated with the pin type.
+        color (str, optional): The color of the pin type. Defaults to None.
+        style (str, optional): The style of the pin type. Defaults to "add_location".
+
+    Returns:
+        PinType: The created PinType object.
+    """
     existing_pin_type = PinType.get_or_none(PinType.name == name)
     if existing_pin_type:
         raise ValueError(f"PinType '{name}' already exists.")
@@ -17,6 +47,12 @@ def create_pin_type(name, fields, color=None, style="add_location"):
     return pin_type
 
 def get_all_pin_types():
+    """
+    Get all pin types.
+
+    Returns:
+        list: A list of dictionaries representing all pin types.
+    """
     pin_types = PinType.select()
     result = []
     
@@ -31,6 +67,15 @@ def get_all_pin_types():
     return result
 
 def get_pin_type_by_name(name):
+    """
+    Get a pin type by its name.
+
+    Args:
+        name (str): The name of the pin type.
+
+    Returns:
+        dict: A dictionary representing the pin type.
+    """
     pin_type = PinType.get_or_none(PinType.name == name)
     if not pin_type:
         raise ValueError(f"PinType '{name}' does not exist.")
@@ -52,6 +97,18 @@ def get_pin_type_by_name(name):
     return result
 
 def add_pin(pin_type_name, latitude, longitude, field_values):
+    """
+    Add a new pin.
+
+    Args:
+        pin_type_name (str): The name of the pin type.
+        latitude (float): The latitude of the pin.
+        longitude (float): The longitude of the pin.
+        field_values (dict): A dictionary of field values for the pin.
+
+    Returns:
+        Pin: The created Pin object.
+    """
     pin_type = PinType.get_or_none(PinType.name == pin_type_name)
     if not pin_type:
         raise ValueError(f"PinType '{pin_type_name}' does not exist.")
@@ -68,6 +125,15 @@ def add_pin(pin_type_name, latitude, longitude, field_values):
     return pin
 
 def get_pin_by_id(pin_id):
+    """
+    Get a pin by its ID.
+
+    Args:
+        pin_id (int): The ID of the pin.
+
+    Returns:
+        dict: A dictionary representing the pin.
+    """
     pin = Pin.get_or_none(Pin.id == pin_id)
     if not pin:
         raise ValueError(f"Pin with id '{pin_id}' does not exist.")
@@ -91,6 +157,15 @@ def get_pin_by_id(pin_id):
     return pin_data
 
 def get_pins(pin_type_name):
+    """
+    Get all pins of a specific pin type.
+
+    Args:
+        pin_type_name (str): The name of the pin type.
+
+    Returns:
+        list: A list of dictionaries representing the pins.
+    """
     pin_type = PinType.get_or_none(PinType.name == pin_type_name)
     if not pin_type:
         raise ValueError(f"PinType '{pin_type_name}' does not exist.")
@@ -111,6 +186,12 @@ def get_pins(pin_type_name):
     return result
 
 def get_all_pins():
+    """
+    Get all pins.
+
+    Returns:
+        list: A list of dictionaries representing all pins.
+    """
     pins = Pin.select()
     result = []
     for pin in pins:
@@ -130,6 +211,16 @@ def get_all_pins():
     return result
 
 def update_pin(pin_id, updated_field_values):
+    """
+    Update a pin.
+
+    Args:
+        pin_id (int): The ID of the pin.
+        updated_field_values (dict): A dictionary of updated field values for the pin.
+
+    Returns:
+        Pin: The updated Pin object.
+    """
     pin = Pin.get_or_none(Pin.id == pin_id)
     if not pin:
         raise ValueError(f"Pin with ID '{pin_id}' does not exist.")
@@ -149,6 +240,12 @@ def update_pin(pin_id, updated_field_values):
     return pin
 
 def delete_pin(pin_id):
+    """
+    Delete a pin.
+
+    Args:
+        pin_id (int): The ID of the pin.
+    """
     pin = Pin.get_or_none(Pin.id == pin_id)
     if not pin:
         raise ValueError(f"Pin with ID '{pin_id}' does not exist.")
@@ -157,6 +254,19 @@ def delete_pin(pin_id):
     print(f"Pin {pin_id} deleted successfully.")
 
 def update_pin_type(pin_type_id, new_name=None, updated_fields=None, new_color=None, new_style=None):
+    """
+    Update a pin type.
+
+    Args:
+        pin_type_id (int): The ID of the pin type.
+        new_name (str, optional): The new name of the pin type. Defaults to None.
+        updated_fields (list, optional): A list of updated fields for the pin type. Defaults to None.
+        new_color (str, optional): The new color of the pin type. Defaults to None.
+        new_style (str, optional): The new style of the pin type. Defaults to None.
+
+    Returns:
+        PinType: The updated PinType object.
+    """
     pin_type = PinType.get_or_none(PinType.id == pin_type_id)
     if not pin_type:
         raise ValueError(f"PinType with ID '{pin_type_id}' does not exist.")
@@ -188,6 +298,13 @@ def update_pin_type(pin_type_id, new_name=None, updated_fields=None, new_color=N
     return pin_type
 
 def delete_pin_type_and_pins(pin_type_name, map_id=0):
+    """
+    Delete a pin type and all associated pins.
+
+    Args:
+        pin_type_name (str): The name of the pin type.
+        map_id (int, optional): The ID of the map. Defaults to 0.
+    """
     pin_type = PinType.get_or_none(PinType.name == pin_type_name)
     if not pin_type:
         raise ValueError(f"PinType with ID '{pin_type_name}' does not exist.")

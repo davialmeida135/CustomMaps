@@ -1,9 +1,24 @@
+"""
+Module for creating and managing pin type overlays.
+
+This module defines the CreatePinTypeOverlay class, which provides functionalities for creating, editing, and deleting pin types.
+
+Classes:
+    CreatePinTypeOverlay: A class for creating and managing pin type overlays.
+"""
 import flet as ft
 from db.crud import create_pin_type
 from flet_contrib.color_picker import ColorPicker
 from map_overlay import update_dot_position, DotOverlay
 
 class CreatePinTypeOverlay(ft.Column):
+    """
+    A class for creating and managing pin type overlays.
+
+    Args:
+        page (ft.Page): The main page object provided by Flet.
+        on_pin_type_created (function): Callback function to be called when a pin type is created.
+    """
     def __init__(self, page: ft.Page, on_pin_type_created):
         super().__init__()
         self.page = page
@@ -56,6 +71,12 @@ class CreatePinTypeOverlay(ft.Column):
         ]
 
     def add_field(self, e):
+        """
+        Add a new field to the pin type.
+
+        Args:
+            e: The event object.
+        """
         field_name_field = ft.TextField(label="Field Name", expand=True)
         field_type_dropdown = ft.Dropdown(
             label="Field Type",
@@ -76,10 +97,22 @@ class CreatePinTypeOverlay(ft.Column):
         self.update()
         
     def remove_field(self, field_row):
+        """
+        Remove a field from the pin type.
+
+        Args:
+            field_row: The row object representing the field to be removed.
+        """
         self.fields_list.controls.remove(field_row)
         self.update()
         
     def verify_field(self, field):
+        """
+        Verify the validity of a field.
+
+        Args:
+            field: The field object to be verified.
+        """
         field.controls[0].error_text = None
         field.controls[1].error_text = None
         erro = False
@@ -94,6 +127,12 @@ class CreatePinTypeOverlay(ft.Column):
         return erro
 
     def save_pin_type(self, e):
+        """
+        Save the pin type with the specified fields.
+
+        Args:
+            e: The event object.
+        """
         erro = False
         # Limpa mensagens de erro
         self.pin_type_name_field.error_text = None
@@ -141,20 +180,13 @@ class CreatePinTypeOverlay(ft.Column):
         #self.page.update()
 
     def cancel(self, e):
+        """
+        Cancel the creation or editing of a pin type.
+
+        Args:
+            e: The event object.
+        """
         self.page.overlay.clear()
         dot_overlay = DotOverlay()
         self.page.overlay.append(dot_overlay)
-        update_dot_position(self.page, dot_overlay)
-        #self.page.update()
-        
-
-'''def main(page: ft.Page):
-    page.title = "ToDo App"
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.scroll = ft.ScrollMode.ADAPTIVE
-
-    # create app control and add it to the page
-    page.add(CreatePinTypeOverlay(page))
-
-
-ft.app(main)'''
+        update_dot_position(self.page, dot_overlay)    

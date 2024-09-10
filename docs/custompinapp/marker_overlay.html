@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>custompinapp.marker_overlay API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>custompinapp.marker_overlay</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="custompinapp.marker_overlay.Attribute"><code class="flex name class">
+<span>class <span class="ident">Attribute</span></span>
+<span>(</span><span>attribute_name, attribute_value, pin_id, editable=True, page: flet_core.page.Page = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class representing an attribute of a pin.</p>
+<p>This class inherits from <code>ft.Column</code> and is used to display and edit attributes
+associated with a pin on the map.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>attribute_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the attribute.</dd>
+<dt><strong><code>attribute_value</code></strong> :&ensp;<code>str</code> or <code>dict</code></dt>
+<dd>The value of the attribute. If a dictionary is provided,
+it should contain 'type' and 'value' keys.</dd>
+<dt><strong><code>pin_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The unique identifier of the pin.</dd>
+<dt><strong><code>editable</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether the attribute is editable. Defaults to True.</dd>
+<dt><strong><code>page</code></strong> :&ensp;<code>ft.Page</code></dt>
+<dd>The main page object provided by Flet. Defaults to None.</dd>
+<dt><strong><code>attribute_type</code></strong> :&ensp;<code>str</code></dt>
+<dd>The type of the attribute if the value is a dictionary.</dd>
+<dt><strong><code>icon</code></strong> :&ensp;<code>ft.Icon</code></dt>
+<dd>The icon representing the attribute.</dd>
+<dt><strong><code>display_field</code></strong> :&ensp;<code>ft.Text</code></dt>
+<dd>The text field used to display the attribute value.</dd>
+<dt><strong><code>edit_field</code></strong> :&ensp;<code>ft.TextField</code></dt>
+<dd>The text field used to edit the attribute value.</dd>
+<dt><strong><code>display_view</code></strong> :&ensp;<code>ft.Container</code></dt>
+<dd>The container for displaying the attribute in view mode.</dd>
+</dl>
+<p>Initialize an Attribute instance.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>attribute_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the attribute.</dd>
+<dt><strong><code>attribute_value</code></strong> :&ensp;<code>str</code> or <code>dict</code></dt>
+<dd>The value of the attribute. If a dictionary is provided,
+it should contain 'type' and 'value' keys.</dd>
+<dt><strong><code>pin_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The unique identifier of the pin.</dd>
+<dt><strong><code>editable</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether the attribute is editable. Defaults to True.</dd>
+<dt><strong><code>page</code></strong> :&ensp;<code>ft.Page</code>, optional</dt>
+<dd>The main page object provided by Flet. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Attribute(ft.Column):
+    &#34;&#34;&#34;
+    A class representing an attribute of a pin.
+
+    This class inherits from `ft.Column` and is used to display and edit attributes
+    associated with a pin on the map.
+
+    Attributes:
+        attribute_name (str): The name of the attribute.
+        attribute_value (str or dict): The value of the attribute. If a dictionary is provided,
+                                       it should contain &#39;type&#39; and &#39;value&#39; keys.
+        pin_id (int): The unique identifier of the pin.
+        editable (bool): Whether the attribute is editable. Defaults to True.
+        page (ft.Page): The main page object provided by Flet. Defaults to None.
+        attribute_type (str): The type of the attribute if the value is a dictionary.
+        icon (ft.Icon): The icon representing the attribute.
+        display_field (ft.Text): The text field used to display the attribute value.
+        edit_field (ft.TextField): The text field used to edit the attribute value.
+        display_view (ft.Container): The container for displaying the attribute in view mode.
+    &#34;&#34;&#34;
+    def __init__(self, attribute_name, attribute_value, pin_id,  editable = True, page: ft.Page = None):
+        &#34;&#34;&#34;
+        Initialize an Attribute instance.
+
+        Args:
+            attribute_name (str): The name of the attribute.
+            attribute_value (str or dict): The value of the attribute. If a dictionary is provided,
+                                           it should contain &#39;type&#39; and &#39;value&#39; keys.
+            pin_id (int): The unique identifier of the pin.
+            editable (bool, optional): Whether the attribute is editable. Defaults to True.
+            page (ft.Page, optional): The main page object provided by Flet. Defaults to None.
+        &#34;&#34;&#34;
+        super().__init__()
+        self.attribute_name = attribute_name
+        self.attribute_value = attribute_value
+        self.pin_id = pin_id
+        self.editable = editable
+        self.page = page
+        
+        if type(self.attribute_value) == dict:
+            self.attribute_type = self.attribute_value[&#39;type&#39;]
+            self.attribute_value = self.attribute_value[&#39;value&#39;]
+        
+        
+        self.icon = ft.Icon(ft.icons.PIN_DROP_ROUNDED)
+        
+        self.display_field = ft.Text(value=self.attribute_value, color=ft.colors.GREY_700, weight=&#34;bold&#34;)
+        self.edit_field = ft.TextField(expand=1)
+
+        self.display_view = ft.Container(
+                padding= 0,
+                border_radius= 15,
+                #bgcolor=ft.colors.RED,
+                border = ft.border.all(2, ft.colors.GREY),
+                content=ft.Row(
+                [
+                    ft.Container(
+                        ft.Icon(ft.icons.ADD_LOCATION, size=30, color=ft.colors.GREY,),
+                        margin=ft.margin.only(left=10,right=20)
+                    ),
+                    
+                    ft.Container(
+                        content=ft.Text(self.attribute_name, color=ft.colors.GREY_500, weight=&#34;bold&#34;, size=14, expand=True),
+                        #bgcolor=ft.colors.ORANGE_300,
+                        alignment=ft.alignment.center_left,
+                        #width=50,
+                        #expand=True,
+                        margin=ft.margin.only(left=10,right=20)
+                        ,
+                    ),
+                    ft.Container(
+                        bgcolor=ft.colors.GREY,
+                        #expand=True,
+                        width=2,
+                        height=50,
+                        #margin= ft.margin.only(left=20,right=5),
+                    ),
+                    #ft.VerticalDivider(),
+                    ft.Container(
+                        content=self.display_field,
+                        #bgcolor=ft.colors.BROWN_400,
+                        alignment=ft.alignment.center,
+                        expand=True,
+                    ),
+                    
+                ],
+                spacing=1,
+                
+                expand=True,
+            ),
+            )
+        
+        if editable:
+            self.display_view.content.controls.append(
+                ft.Container(
+                        content=ft.IconButton(
+                            icon=ft.icons.CREATE_OUTLINED,
+                            tooltip=&#34;Edit&#34;,
+                            on_click=self.edit_clicked,
+                            ),
+                    )
+            )
+
+        self.edit_view = ft.Container(
+                visible=False,
+                padding= 0,
+                border_radius= 15,
+                #bgcolor=ft.colors.RED,
+                border = ft.border.all(2, ft.colors.GREY),
+                content=ft.Row(
+                [
+                    ft.Container(
+                        ft.Icon(ft.icons.ADD_LOCATION, size=30, color=ft.colors.GREY,),
+                        margin=ft.margin.only(left=10,right=20)
+                    ),
+                    
+                    ft.Container(
+                        content=ft.Text(self.attribute_name, color=ft.colors.GREY_500, weight=&#34;bold&#34;, size=14, expand=True),
+                        #bgcolor=ft.colors.ORANGE_300,
+                        alignment=ft.alignment.center_left,
+                        #width=50,
+                        #expand=True,
+                        margin=ft.margin.only(left=10,right=20)
+                        ,
+                    ),
+                    ft.Container(
+                        bgcolor=ft.colors.GREY,
+                        #expand=True,
+                        width=2,
+                        height=50,
+                        #margin= ft.margin.only(left=20,right=5),
+                    ),
+                    #ft.VerticalDivider(),
+                    ft.Container(
+                        content=self.edit_field,
+                        #bgcolor=ft.colors.BROWN_400,
+                        alignment=ft.alignment.center,
+                        expand=True,
+                    ),
+                    ft.Container(
+                        content=ft.IconButton(
+                            icon=ft.icons.CLOSE_OUTLINED,
+                            tooltip=&#34;Close&#34;,
+                            on_click=self.close_clicked,
+                            ),
+                    ),
+                    ft.IconButton(
+                        icon=ft.icons.DONE_OUTLINE_OUTLINED,
+                        icon_color=ft.colors.GREEN,
+                        tooltip=&#34;Update&#34;,
+                        on_click=self.save_clicked,
+                    ),
+                    
+                ],
+                spacing=1,
+                
+                expand=True,
+            ),
+            )
+        
+        self.controls = [self.display_view, self.edit_view]
+        
+
+    def edit_clicked(self, e):
+        &#34;&#34;&#34;
+        Handle the click event for editing an attribute.
+
+        This function is called when the edit button is clicked. It opens the date picker
+        if the attribute type is &#39;date&#39;, or switches to the edit view for other attribute types.
+
+        Args:
+            e: The event object representing the click event.
+        &#34;&#34;&#34;
+        def get_current_date():
+            try:
+                return datetime.datetime.strptime(self.display_field.value, &#39;%Y-%m-%d&#39;)
+            except:
+                return datetime.datetime.now() 
+        
+        def handle_date_change(e):
+            &#34;&#34;&#34;
+            Handle the change event for the date picker.
+
+            This function is called when the date picker value changes. It updates the
+            attribute value, display field, and the pin with the new date.
+
+            Args:
+                e: The event object containing the new date value.
+            &#34;&#34;&#34;
+            date = str(e.control.value).split(&#39; &#39;)[0]
+            
+            self.attribute_value = date
+            self.display_field.value = date
+            date = {}
+            date[self.attribute_name] = self.attribute_value
+            update_pin(self.pin_id, date)
+
+            print(date)
+            self.update()
+            
+        if self.editable:
+            if self.attribute_type == &#39;date&#39;:
+                          
+                self.page.open(
+                    ft.DatePicker(
+                    current_date=get_current_date(),
+                    on_change=handle_date_change,  
+                    )
+                )
+            elif self.attribute_type == &#39;integer&#39;:
+                self.edit_field.value = self.display_field.value
+                self.display_view.visible = False
+                self.edit_view.visible = True
+            else:
+                self.edit_field.value = self.display_field.value
+                self.display_view.visible = False
+                self.edit_view.visible = True
+                
+        self.update()
+
+    def save_clicked(self, e):
+        &#34;&#34;&#34;
+        Handle the click event for saving an edited attribute.
+
+        This function is called when the save button is clicked. It updates the attribute value,
+        display field, and the pin with the new value.
+
+        Args:
+            e: The event object representing the click event.
+        &#34;&#34;&#34;
+        updated_field_values = {}
+        if self.editable:
+            if self.attribute_type == &#39;integer&#39;:
+                self.attribute_value = self.edit_field.value      
+                print(&#39;saving integer field &#39; + self.attribute_value)
+                self.display_field.value = self.edit_field.value      
+                updated_field_values[self.attribute_name] = self.edit_field.value
+
+            else:
+                self.attribute_value = self.edit_field.value
+                print(&#39;saving string field &#39; + self.attribute_value)
+                self.display_field.value = self.edit_field.value             
+                updated_field_values[self.attribute_name] = self.edit_field.value
+                
+        update_pin(self.pin_id, updated_field_values)
+
+        #update_pin(self.pin_id, updated_field_values)
+        self.display_view.visible = True
+        self.edit_view.visible = False
+        self.update()
+        
+    def close_clicked(self, e):
+        self.display_view.visible = True
+        self.edit_view.visible = False
+        self.update()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>flet_core.column.Column</li>
+<li>flet_core.constrained_control.ConstrainedControl</li>
+<li>flet_core.scrollable_control.ScrollableControl</li>
+<li>flet_core.adaptive_control.AdaptiveControl</li>
+<li>flet_core.control.Control</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="custompinapp.marker_overlay.Attribute.close_clicked"><code class="name flex">
+<span>def <span class="ident">close_clicked</span></span>(<span>self, e)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.marker_overlay.Attribute.edit_clicked"><code class="name flex">
+<span>def <span class="ident">edit_clicked</span></span>(<span>self, e)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Handle the click event for editing an attribute.</p>
+<p>This function is called when the edit button is clicked. It opens the date picker
+if the attribute type is 'date', or switches to the edit view for other attribute types.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>e</code></strong></dt>
+<dd>The event object representing the click event.</dd>
+</dl></div>
+</dd>
+<dt id="custompinapp.marker_overlay.Attribute.save_clicked"><code class="name flex">
+<span>def <span class="ident">save_clicked</span></span>(<span>self, e)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Handle the click event for saving an edited attribute.</p>
+<p>This function is called when the save button is clicked. It updates the attribute value,
+display field, and the pin with the new value.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>e</code></strong></dt>
+<dd>The event object representing the click event.</dd>
+</dl></div>
+</dd>
+</dl>
+</dd>
+<dt id="custompinapp.marker_overlay.MarkerOverlay"><code class="flex name class">
+<span>class <span class="ident">MarkerOverlay</span></span>
+<span>(</span><span>page: flet_core.page.Page, coordinates, id: int, load_pins)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class representing an overlay for a marker on the map.</p>
+<p>This class inherits from <code>ft.Column</code> and is used to display and manage
+the details and actions associated with a marker on the map.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>page</code></strong> :&ensp;<code>ft.Page</code></dt>
+<dd>The main page object provided by Flet.</dd>
+<dt><strong><code>pin_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The unique identifier of the pin.</dd>
+<dt><strong><code>coordinates</code></strong></dt>
+<dd>The coordinates of the marker.</dd>
+<dt><strong><code>expand</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether the overlay should expand to fill available space.</dd>
+<dt><strong><code>pin_id_field</code></strong> :&ensp;<code>ft.Text</code></dt>
+<dd>The text field displaying the pin ID.</dd>
+<dt><strong><code>delete_button</code></strong> :&ensp;<code>ft.IconButton</code></dt>
+<dd>The button to delete the marker.</dd>
+<dt><strong><code>close_button</code></strong> :&ensp;<code>ft.IconButton</code></dt>
+<dd>The button to close the overlay.</dd>
+</dl>
+<p>Initialize a MarkerOverlay instance.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>page</code></strong> :&ensp;<code>ft.Page</code></dt>
+<dd>The main page object provided by Flet.</dd>
+<dt><strong><code>coordinates</code></strong></dt>
+<dd>The coordinates of the marker.</dd>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The unique identifier of the pin.</dd>
+<dt><strong><code>load_pins</code></strong> :&ensp;<code>function</code></dt>
+<dd>The function to load pins after deletion.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MarkerOverlay(ft.Column):
+    &#34;&#34;&#34;
+    A class representing an overlay for a marker on the map.
+
+    This class inherits from `ft.Column` and is used to display and manage
+    the details and actions associated with a marker on the map.
+
+    Attributes:
+        page (ft.Page): The main page object provided by Flet.
+        pin_id (int): The unique identifier of the pin.
+        coordinates: The coordinates of the marker.
+        expand (bool): Whether the overlay should expand to fill available space.
+        pin_id_field (ft.Text): The text field displaying the pin ID.
+        delete_button (ft.IconButton): The button to delete the marker.
+        close_button (ft.IconButton): The button to close the overlay.
+    &#34;&#34;&#34;
+    def __init__(self, page: ft.Page,coordinates ,id: int, load_pins):
+        &#34;&#34;&#34;
+        Initialize a MarkerOverlay instance.
+
+        Args:
+            page (ft.Page): The main page object provided by Flet.
+            coordinates: The coordinates of the marker.
+            id (int): The unique identifier of the pin.
+            load_pins (function): The function to load pins after deletion.
+        &#34;&#34;&#34;
+        super().__init__()
+        self.page=page
+        self.pin_id = id
+        self.coordinates = coordinates
+        self.expand= True
+        
+        def clear_overlay(e):
+            &#34;&#34;&#34;
+            Clear the overlay and reset the dot position.
+
+            Args:
+                e: The event object representing the click event.
+            &#34;&#34;&#34;
+            self.page.overlay.clear()
+            dot_overlay = DotOverlay()
+            page.overlay.append(dot_overlay)
+            update_dot_position(self.page, dot_overlay)
+            #self.page.update()
+        
+        def delete_marker(e):
+            &#34;&#34;&#34;
+            Delete the marker and reload pins.
+
+            Args:
+                e: The event object representing the click event.
+            &#34;&#34;&#34;
+            try:
+                print(&#39;delte pin called&#39;)
+                delete_pin(self.pin_id)  # Call the function to delete the marker
+                self.page.overlay.clear()
+                print(&#39;load_pins called&#39;)
+                load_pins()
+                print(&#39;load_pins completed&#39;)
+                dot_overlay = DotOverlay()
+                page.overlay.append(dot_overlay)
+                update_dot_position(self.page, dot_overlay)
+                print(&#34;update_dot_position end&#34;)
+            
+            except Exception as ex:
+                print(f&#34;Error deleting marker: {ex}&#34;)
+
+        pin_text = f&#39;#{self.pin_id}&#39;
+        self.pin_id_field = ft.Text(value= pin_text, expand=True, color=ft.colors.BLACK, size=20, text_align=ft.TextAlign.JUSTIFY)
+        self.delete_button = ft.IconButton(icon=ft.icons.DELETE_OUTLINED, on_click=delete_marker)
+        self.close_button = ft.IconButton(icon=ft.icons.CLOSE, alignment=ft.alignment.center_right,on_click=clear_overlay)
+
+        # Fetch pin details
+        pin_details = get_pin_by_id(self.pin_id)
+        pin_info_list = ft.ListView(expand=True,spacing=5)
+
+        # Create a list view to display pin details
+        def rebuild_pin_info():
+            &#34;&#34;&#34;
+            Rebuild the pin information list view.
+
+            This function clears the current controls in the pin information list view
+            and appends the updated pin details.
+            
+            Returns:
+                ft.ListView: The updated pin information list
+            &#34;&#34;&#34;
+            pin_info_list.controls.clear()
+            
+            pin_info_list.controls.append(Attribute(&#39;Pin Type&#39;,pin_details[&#39;pin_type&#39;],self.pin_id, editable=False))
+            position_text = f&#34;{pin_details[&#39;latitude&#39;]}, {pin_details[&#39;longitude&#39;]}&#34;
+            pin_info_list.controls.append(Attribute(&#39;Position&#39;,position_text,self.pin_id,editable=False))
+            for field_name, value in pin_details[&#39;fields&#39;].items():
+                pin_info_list.controls.append(Attribute(field_name,dict(value),self.pin_id,editable=True, page = self.page))
+                print(value)
+            return pin_info_list
+
+        rebuild_pin_info()
+        
+        self.controls = [
+                ft.Row(
+                    controls=[
+                        self.pin_id_field,
+                        self.delete_button,
+                        self.close_button,
+                    ]
+                ),
+                pin_info_list,       
+        ]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>flet_core.column.Column</li>
+<li>flet_core.constrained_control.ConstrainedControl</li>
+<li>flet_core.scrollable_control.ScrollableControl</li>
+<li>flet_core.adaptive_control.AdaptiveControl</li>
+<li>flet_core.control.Control</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="custompinapp" href="index.html">custompinapp</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="custompinapp.marker_overlay.Attribute" href="#custompinapp.marker_overlay.Attribute">Attribute</a></code></h4>
+<ul class="">
+<li><code><a title="custompinapp.marker_overlay.Attribute.close_clicked" href="#custompinapp.marker_overlay.Attribute.close_clicked">close_clicked</a></code></li>
+<li><code><a title="custompinapp.marker_overlay.Attribute.edit_clicked" href="#custompinapp.marker_overlay.Attribute.edit_clicked">edit_clicked</a></code></li>
+<li><code><a title="custompinapp.marker_overlay.Attribute.save_clicked" href="#custompinapp.marker_overlay.Attribute.save_clicked">save_clicked</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="custompinapp.marker_overlay.MarkerOverlay" href="#custompinapp.marker_overlay.MarkerOverlay">MarkerOverlay</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

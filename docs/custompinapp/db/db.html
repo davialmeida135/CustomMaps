@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>custompinapp.db.db API documentation</title>
+<meta name="description" content="Database models and initialization for the Custom Pins application …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>custompinapp.db.db</code></h1>
+</header>
+<section id="section-intro">
+<p>Database models and initialization for the Custom Pins application.</p>
+<p>This module defines the database models and initializes the SQLite database.</p>
+<h2 id="classes">Classes</h2>
+<p>BaseModel: Base model class for all database models.
+PinType: Model class for pin types.
+Field: Model class for fields associated with pin types.
+Pin: Model class for pins.
+FieldValue: Model class for field values associated with pins.</p>
+<h2 id="functions">Functions</h2>
+<p>create_default_pin_type(): Create the default pin type with name and date fields.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="custompinapp.db.db.create_default_pin_type"><code class="name flex">
+<span>def <span class="ident">create_default_pin_type</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates the default pin type with predefined fields if it doesn't already exist.</p>
+<p>This function checks if a pin type named "Default" exists. If not, it creates the pin type
+and adds two fields: "Name" (string) and "Date" (date), both of which are required.</p></div>
+</dd>
+<dt id="custompinapp.db.db.get_session"><code class="name flex">
+<span>def <span class="ident">get_session</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieves the current database session.</p>
+<p>This function returns the current database connection, which can be used to perform
+database operations within a session context.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>SqliteDatabase</code></dt>
+<dd>The current database connection.</dd>
+</dl></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="custompinapp.db.db.BaseModel"><code class="flex name class">
+<span>class <span class="ident">BaseModel</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base model class for all database models.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>Meta</code></strong></dt>
+<dd>Meta class to define the database.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseModel(Model):
+    &#34;&#34;&#34;
+    Base model class for all database models.
+
+    Attributes:
+        Meta: Meta class to define the database.
+    &#34;&#34;&#34;
+    class Meta:
+        database = database</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>peewee.Model</li>
+<li>peewee._metaclass_helper_</li>
+<li>peewee.Node</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="custompinapp.db.db.Field" href="#custompinapp.db.db.Field">Field</a></li>
+<li><a title="custompinapp.db.db.FieldValue" href="#custompinapp.db.db.FieldValue">FieldValue</a></li>
+<li><a title="custompinapp.db.db.Pin" href="#custompinapp.db.db.Pin">Pin</a></li>
+<li><a title="custompinapp.db.db.PinType" href="#custompinapp.db.db.PinType">PinType</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="custompinapp.db.db.BaseModel.DoesNotExist"><code class="name">var <span class="ident">DoesNotExist</span></code></dt>
+<dd>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+</dd>
+<dt id="custompinapp.db.db.BaseModel.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="custompinapp.db.db.Field"><code class="flex name class">
+<span>class <span class="ident">Field</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Model class for fields associated with pin types.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>pin_type</code></strong> :&ensp;<code>ForeignKeyField</code></dt>
+<dd>The pin type associated with the field.</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>CharField</code></dt>
+<dd>The name of the field.</dd>
+<dt><strong><code>field_type</code></strong> :&ensp;<code>CharField</code></dt>
+<dd>The type of the field ('string', 'number', 'date').</dd>
+<dt><strong><code>is_required</code></strong> :&ensp;<code>IntegerField</code></dt>
+<dd>Whether the field is required (0 = False, 1 = True).</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Field(BaseModel):
+    &#34;&#34;&#34;
+    Model class for fields associated with pin types.
+
+    Attributes:
+        pin_type (ForeignKeyField): The pin type associated with the field.
+        name (CharField): The name of the field.
+        field_type (CharField): The type of the field (&#39;string&#39;, &#39;number&#39;, &#39;date&#39;).
+        is_required (IntegerField): Whether the field is required (0 = False, 1 = True).
+    &#34;&#34;&#34;
+    pin_type = ForeignKeyField(PinType, backref=&#39;fields&#39;, on_delete=&#39;CASCADE&#39;)
+    name = CharField(null=False)
+    field_type = CharField(null=False)  # &#39;string&#39;, &#39;number&#39;, &#39;date&#39;
+    is_required = IntegerField(default=0)  # 0 = False, 1 = True</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></li>
+<li>peewee.Model</li>
+<li>peewee._metaclass_helper_</li>
+<li>peewee.Node</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="custompinapp.db.db.Field.field_type"><code class="name">var <span class="ident">field_type</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Field.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Field.is_required"><code class="name">var <span class="ident">is_required</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Field.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Field.pin_type"><code class="name">var <span class="ident">pin_type</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Field.pin_type_id"><code class="name">var <span class="ident">pin_type_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="custompinapp.db.db.Field.field_values"><code class="name">var <span class="ident">field_values</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, instance_type=None):
+    if instance is not None:
+        dest = self.field.rel_field.name
+        return (self.rel_model
+                .select()
+                .where(self.field == getattr(instance, dest)))
+    return self</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></b></code>:
+<ul class="hlist">
+<li><code><a title="custompinapp.db.db.BaseModel.DoesNotExist" href="#custompinapp.db.db.BaseModel.DoesNotExist">DoesNotExist</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="custompinapp.db.db.FieldValue"><code class="flex name class">
+<span>class <span class="ident">FieldValue</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Model class for field values associated with pins.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>pin</code></strong> :&ensp;<code>ForeignKeyField</code></dt>
+<dd>The pin associated with the field value.</dd>
+<dt><strong><code>field</code></strong> :&ensp;<code>ForeignKeyField</code></dt>
+<dd>The field associated with the field value.</dd>
+<dt><strong><code>value</code></strong> :&ensp;<code>TextField</code></dt>
+<dd>The value of the field stored as text.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FieldValue(BaseModel):
+    &#34;&#34;&#34;
+    Model class for field values associated with pins.
+
+    Attributes:
+        pin (ForeignKeyField): The pin associated with the field value.
+        field (ForeignKeyField): The field associated with the field value.
+        value (TextField): The value of the field stored as text.
+    &#34;&#34;&#34;
+    pin = ForeignKeyField(Pin, backref=&#39;field_values&#39;, on_delete=&#39;CASCADE&#39;)
+    field = ForeignKeyField(Field, backref=&#39;field_values&#39;, on_delete=&#39;CASCADE&#39;)
+    value = TextField(null=False)  # Store value as text</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></li>
+<li>peewee.Model</li>
+<li>peewee._metaclass_helper_</li>
+<li>peewee.Node</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="custompinapp.db.db.FieldValue.field"><code class="name">var <span class="ident">field</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.FieldValue.field_id"><code class="name">var <span class="ident">field_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.FieldValue.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.FieldValue.pin"><code class="name">var <span class="ident">pin</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.FieldValue.pin_id"><code class="name">var <span class="ident">pin_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.FieldValue.value"><code class="name">var <span class="ident">value</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></b></code>:
+<ul class="hlist">
+<li><code><a title="custompinapp.db.db.BaseModel.DoesNotExist" href="#custompinapp.db.db.BaseModel.DoesNotExist">DoesNotExist</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="custompinapp.db.db.Pin"><code class="flex name class">
+<span>class <span class="ident">Pin</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Model class for pins.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>pin_type</code></strong> :&ensp;<code>ForeignKeyField</code></dt>
+<dd>The pin type associated with the pin.</dd>
+<dt><strong><code>latitude</code></strong> :&ensp;<code>FloatField</code></dt>
+<dd>The latitude of the pin.</dd>
+<dt><strong><code>longitude</code></strong> :&ensp;<code>FloatField</code></dt>
+<dd>The longitude of the pin.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Pin(BaseModel):
+    &#34;&#34;&#34;
+    Model class for pins.
+
+    Attributes:
+        pin_type (ForeignKeyField): The pin type associated with the pin.
+        latitude (FloatField): The latitude of the pin.
+        longitude (FloatField): The longitude of the pin.
+    &#34;&#34;&#34;
+    pin_type = ForeignKeyField(PinType, backref=&#39;pins&#39;, on_delete=&#39;CASCADE&#39;)
+    latitude = FloatField(null=False)
+    longitude = FloatField(null=False)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></li>
+<li>peewee.Model</li>
+<li>peewee._metaclass_helper_</li>
+<li>peewee.Node</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="custompinapp.db.db.Pin.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Pin.latitude"><code class="name">var <span class="ident">latitude</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Pin.longitude"><code class="name">var <span class="ident">longitude</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Pin.pin_type"><code class="name">var <span class="ident">pin_type</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.Pin.pin_type_id"><code class="name">var <span class="ident">pin_type_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="custompinapp.db.db.Pin.field_values"><code class="name">var <span class="ident">field_values</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, instance_type=None):
+    if instance is not None:
+        dest = self.field.rel_field.name
+        return (self.rel_model
+                .select()
+                .where(self.field == getattr(instance, dest)))
+    return self</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></b></code>:
+<ul class="hlist">
+<li><code><a title="custompinapp.db.db.BaseModel.DoesNotExist" href="#custompinapp.db.db.BaseModel.DoesNotExist">DoesNotExist</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="custompinapp.db.db.PinType"><code class="flex name class">
+<span>class <span class="ident">PinType</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Model class for pin types.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>CharField</code></dt>
+<dd>The name of the pin type.</dd>
+<dt><strong><code>color</code></strong> :&ensp;<code>CharField</code></dt>
+<dd>The color of the pin type.</dd>
+<dt><strong><code>style</code></strong> :&ensp;<code>CharField</code></dt>
+<dd>The style of the pin type.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PinType(BaseModel):
+    &#34;&#34;&#34;
+    Model class for pin types.
+
+    Attributes:
+        name (CharField): The name of the pin type.
+        color (CharField): The color of the pin type.
+        style (CharField): The style of the pin type.
+    &#34;&#34;&#34;
+    name = CharField(unique=True, null=False)  # Ensures name is unique
+    color = CharField(default=&#34;36aedc&#34;, null=False)
+    style = CharField(default=&#34;add_location&#34;, null=False)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></li>
+<li>peewee.Model</li>
+<li>peewee._metaclass_helper_</li>
+<li>peewee.Node</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="custompinapp.db.db.PinType.color"><code class="name">var <span class="ident">color</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.PinType.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.PinType.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="custompinapp.db.db.PinType.style"><code class="name">var <span class="ident">style</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="custompinapp.db.db.PinType.fields"><code class="name">var <span class="ident">fields</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, instance_type=None):
+    if instance is not None:
+        dest = self.field.rel_field.name
+        return (self.rel_model
+                .select()
+                .where(self.field == getattr(instance, dest)))
+    return self</code></pre>
+</details>
+</dd>
+<dt id="custompinapp.db.db.PinType.pins"><code class="name">var <span class="ident">pins</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, instance_type=None):
+    if instance is not None:
+        dest = self.field.rel_field.name
+        return (self.rel_model
+                .select()
+                .where(self.field == getattr(instance, dest)))
+    return self</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></b></code>:
+<ul class="hlist">
+<li><code><a title="custompinapp.db.db.BaseModel.DoesNotExist" href="#custompinapp.db.db.BaseModel.DoesNotExist">DoesNotExist</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="custompinapp.db" href="index.html">custompinapp.db</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="custompinapp.db.db.create_default_pin_type" href="#custompinapp.db.db.create_default_pin_type">create_default_pin_type</a></code></li>
+<li><code><a title="custompinapp.db.db.get_session" href="#custompinapp.db.db.get_session">get_session</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="custompinapp.db.db.BaseModel" href="#custompinapp.db.db.BaseModel">BaseModel</a></code></h4>
+<ul class="">
+<li><code><a title="custompinapp.db.db.BaseModel.DoesNotExist" href="#custompinapp.db.db.BaseModel.DoesNotExist">DoesNotExist</a></code></li>
+<li><code><a title="custompinapp.db.db.BaseModel.id" href="#custompinapp.db.db.BaseModel.id">id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="custompinapp.db.db.Field" href="#custompinapp.db.db.Field">Field</a></code></h4>
+<ul class="two-column">
+<li><code><a title="custompinapp.db.db.Field.field_type" href="#custompinapp.db.db.Field.field_type">field_type</a></code></li>
+<li><code><a title="custompinapp.db.db.Field.field_values" href="#custompinapp.db.db.Field.field_values">field_values</a></code></li>
+<li><code><a title="custompinapp.db.db.Field.id" href="#custompinapp.db.db.Field.id">id</a></code></li>
+<li><code><a title="custompinapp.db.db.Field.is_required" href="#custompinapp.db.db.Field.is_required">is_required</a></code></li>
+<li><code><a title="custompinapp.db.db.Field.name" href="#custompinapp.db.db.Field.name">name</a></code></li>
+<li><code><a title="custompinapp.db.db.Field.pin_type" href="#custompinapp.db.db.Field.pin_type">pin_type</a></code></li>
+<li><code><a title="custompinapp.db.db.Field.pin_type_id" href="#custompinapp.db.db.Field.pin_type_id">pin_type_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="custompinapp.db.db.FieldValue" href="#custompinapp.db.db.FieldValue">FieldValue</a></code></h4>
+<ul class="two-column">
+<li><code><a title="custompinapp.db.db.FieldValue.field" href="#custompinapp.db.db.FieldValue.field">field</a></code></li>
+<li><code><a title="custompinapp.db.db.FieldValue.field_id" href="#custompinapp.db.db.FieldValue.field_id">field_id</a></code></li>
+<li><code><a title="custompinapp.db.db.FieldValue.id" href="#custompinapp.db.db.FieldValue.id">id</a></code></li>
+<li><code><a title="custompinapp.db.db.FieldValue.pin" href="#custompinapp.db.db.FieldValue.pin">pin</a></code></li>
+<li><code><a title="custompinapp.db.db.FieldValue.pin_id" href="#custompinapp.db.db.FieldValue.pin_id">pin_id</a></code></li>
+<li><code><a title="custompinapp.db.db.FieldValue.value" href="#custompinapp.db.db.FieldValue.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="custompinapp.db.db.Pin" href="#custompinapp.db.db.Pin">Pin</a></code></h4>
+<ul class="two-column">
+<li><code><a title="custompinapp.db.db.Pin.field_values" href="#custompinapp.db.db.Pin.field_values">field_values</a></code></li>
+<li><code><a title="custompinapp.db.db.Pin.id" href="#custompinapp.db.db.Pin.id">id</a></code></li>
+<li><code><a title="custompinapp.db.db.Pin.latitude" href="#custompinapp.db.db.Pin.latitude">latitude</a></code></li>
+<li><code><a title="custompinapp.db.db.Pin.longitude" href="#custompinapp.db.db.Pin.longitude">longitude</a></code></li>
+<li><code><a title="custompinapp.db.db.Pin.pin_type" href="#custompinapp.db.db.Pin.pin_type">pin_type</a></code></li>
+<li><code><a title="custompinapp.db.db.Pin.pin_type_id" href="#custompinapp.db.db.Pin.pin_type_id">pin_type_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="custompinapp.db.db.PinType" href="#custompinapp.db.db.PinType">PinType</a></code></h4>
+<ul class="two-column">
+<li><code><a title="custompinapp.db.db.PinType.color" href="#custompinapp.db.db.PinType.color">color</a></code></li>
+<li><code><a title="custompinapp.db.db.PinType.fields" href="#custompinapp.db.db.PinType.fields">fields</a></code></li>
+<li><code><a title="custompinapp.db.db.PinType.id" href="#custompinapp.db.db.PinType.id">id</a></code></li>
+<li><code><a title="custompinapp.db.db.PinType.name" href="#custompinapp.db.db.PinType.name">name</a></code></li>
+<li><code><a title="custompinapp.db.db.PinType.pins" href="#custompinapp.db.db.PinType.pins">pins</a></code></li>
+<li><code><a title="custompinapp.db.db.PinType.style" href="#custompinapp.db.db.PinType.style">style</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

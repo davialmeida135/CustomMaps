@@ -1,7 +1,28 @@
 import flet as ft
 import platform
 class DotOverlay(ft.Container):
+    """
+    A class representing a dot overlay on the map.
+
+    This class inherits from `ft.Container` and is used to create a small red dot
+    that is centered on the map and ignores interactions.
+
+    Attributes:
+        width (int): The width of the dot.
+        height (int): The height of the dot.
+        bgcolor (str): The background color of the dot.
+        border_radius (ft.BorderRadius): The border radius of the dot.
+        alignment (ft.Alignment): The alignment of the dot.
+        visible (bool): Whether the dot is visible.
+        ignore_interactions (bool): Whether the dot ignores interactions.
+    """
     def __init__(self):
+        """
+        Initialize a DotOverlay instance.
+
+        This constructor sets the width, height, background color, border radius,
+        alignment, visibility, and interaction properties of the dot.
+        """
         super().__init__(
             width=5,
             height=5,
@@ -14,6 +35,16 @@ class DotOverlay(ft.Container):
         )
 
 def update_dot_position(page: ft.Page, dot_overlay):
+    """
+    Update the position of the dot overlay on the map.
+
+    This function calculates the center position of the map and updates the
+    margin of the dot overlay to center it on the map.
+
+    Args:
+        page (ft.Page): The main page object provided by Flet.
+        dot_overlay (DotOverlay): The dot overlay object to be positioned.
+    """
     # Define the individual margins
     print("User agent> ",page.client_user_agent)
     if page.width > page.height:
@@ -26,15 +57,7 @@ def update_dot_position(page: ft.Page, dot_overlay):
         margin_bottom = 204
         margin_left = 5
         margin_right = 0
-    '''
-    # Calculate the map's dimensions considering the margins
-    map_width = page.width - (margin_left + margin_right)
-    map_height = page.height - (margin_top + margin_bottom)
-    
-    # Calculate center position relative to the map
-    dot_overlay.left = margin_left + (map_width - dot_overlay.width) / 2
-    dot_overlay.top = margin_top + (map_height - dot_overlay.height) / 2
-    '''
+
     map_width = page.width - (margin_left + margin_right)
     map_height = page.height - (margin_top + margin_bottom)
 

@@ -4,7 +4,37 @@ from map_overlay import DotOverlay, update_dot_position
 import datetime
 
 class Attribute(ft.Column):
+    """
+    A class representing an attribute of a pin.
+
+    This class inherits from `ft.Column` and is used to display and edit attributes
+    associated with a pin on the map.
+
+    Attributes:
+        attribute_name (str): The name of the attribute.
+        attribute_value (str or dict): The value of the attribute. If a dictionary is provided,
+                                       it should contain 'type' and 'value' keys.
+        pin_id (int): The unique identifier of the pin.
+        editable (bool): Whether the attribute is editable. Defaults to True.
+        page (ft.Page): The main page object provided by Flet. Defaults to None.
+        attribute_type (str): The type of the attribute if the value is a dictionary.
+        icon (ft.Icon): The icon representing the attribute.
+        display_field (ft.Text): The text field used to display the attribute value.
+        edit_field (ft.TextField): The text field used to edit the attribute value.
+        display_view (ft.Container): The container for displaying the attribute in view mode.
+    """
     def __init__(self, attribute_name, attribute_value, pin_id,  editable = True, page: ft.Page = None):
+        """
+        Initialize an Attribute instance.
+
+        Args:
+            attribute_name (str): The name of the attribute.
+            attribute_value (str or dict): The value of the attribute. If a dictionary is provided,
+                                           it should contain 'type' and 'value' keys.
+            pin_id (int): The unique identifier of the pin.
+            editable (bool, optional): Whether the attribute is editable. Defaults to True.
+            page (ft.Page, optional): The main page object provided by Flet. Defaults to None.
+        """
         super().__init__()
         self.attribute_name = attribute_name
         self.attribute_value = attribute_value
@@ -137,7 +167,15 @@ class Attribute(ft.Column):
         
 
     def edit_clicked(self, e):
-        
+        """
+        Handle the click event for editing an attribute.
+
+        This function is called when the edit button is clicked. It opens the date picker
+        if the attribute type is 'date', or switches to the edit view for other attribute types.
+
+        Args:
+            e: The event object representing the click event.
+        """
         def get_current_date():
             try:
                 return datetime.datetime.strptime(self.display_field.value, '%Y-%m-%d')
@@ -145,6 +183,15 @@ class Attribute(ft.Column):
                 return datetime.datetime.now() 
         
         def handle_date_change(e):
+            """
+            Handle the change event for the date picker.
+
+            This function is called when the date picker value changes. It updates the
+            attribute value, display field, and the pin with the new date.
+
+            Args:
+                e: The event object containing the new date value.
+            """
             date = str(e.control.value).split(' ')[0]
             
             self.attribute_value = date
@@ -177,6 +224,15 @@ class Attribute(ft.Column):
         self.update()
 
     def save_clicked(self, e):
+        """
+        Handle the click event for saving an edited attribute.
+
+        This function is called when the save button is clicked. It updates the attribute value,
+        display field, and the pin with the new value.
+
+        Args:
+            e: The event object representing the click event.
+        """
         updated_field_values = {}
         if self.editable:
             if self.attribute_type == 'integer':
@@ -205,7 +261,31 @@ class Attribute(ft.Column):
 
 
 class MarkerOverlay(ft.Column):
+    """
+    A class representing an overlay for a marker on the map.
+
+    This class inherits from `ft.Column` and is used to display and manage
+    the details and actions associated with a marker on the map.
+
+    Attributes:
+        page (ft.Page): The main page object provided by Flet.
+        pin_id (int): The unique identifier of the pin.
+        coordinates: The coordinates of the marker.
+        expand (bool): Whether the overlay should expand to fill available space.
+        pin_id_field (ft.Text): The text field displaying the pin ID.
+        delete_button (ft.IconButton): The button to delete the marker.
+        close_button (ft.IconButton): The button to close the overlay.
+    """
     def __init__(self, page: ft.Page,coordinates ,id: int, load_pins):
+        """
+        Initialize a MarkerOverlay instance.
+
+        Args:
+            page (ft.Page): The main page object provided by Flet.
+            coordinates: The coordinates of the marker.
+            id (int): The unique identifier of the pin.
+            load_pins (function): The function to load pins after deletion.
+        """
         super().__init__()
         self.page=page
         self.pin_id = id
@@ -213,6 +293,12 @@ class MarkerOverlay(ft.Column):
         self.expand= True
         
         def clear_overlay(e):
+            """
+            Clear the overlay and reset the dot position.
+
+            Args:
+                e: The event object representing the click event.
+            """
             self.page.overlay.clear()
             dot_overlay = DotOverlay()
             page.overlay.append(dot_overlay)
@@ -220,6 +306,12 @@ class MarkerOverlay(ft.Column):
             #self.page.update()
         
         def delete_marker(e):
+            """
+            Delete the marker and reload pins.
+
+            Args:
+                e: The event object representing the click event.
+            """
             try:
                 print('delte pin called')
                 delete_pin(self.pin_id)  # Call the function to delete the marker
@@ -246,6 +338,15 @@ class MarkerOverlay(ft.Column):
 
         # Create a list view to display pin details
         def rebuild_pin_info():
+            """
+            Rebuild the pin information list view.
+
+            This function clears the current controls in the pin information list view
+            and appends the updated pin details.
+            
+            Returns:
+                ft.ListView: The updated pin information list
+            """
             pin_info_list.controls.clear()
             
             pin_info_list.controls.append(Attribute('Pin Type',pin_details['pin_type'],self.pin_id, editable=False))
