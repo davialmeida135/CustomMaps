@@ -1,0 +1,13 @@
+
+services:
+  custommaps:
+    container_name: map-app 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    volumes:
+      - ./custompinapp:/app
+    command: flet run --web --port 8000 /app/main.py

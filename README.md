@@ -18,7 +18,7 @@ CustomMaps is an application that allows users to create and manage custom pins 
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/CustomMaps.git
+    git clone https://github.com/davialmeida135/CustomMaps.git
     ```
 2. Navigate to the project directory:
     ```sh
@@ -65,7 +65,7 @@ CustomMaps é uma aplicação que permite aos usuários criar e gerenciar pins p
 
 1. Clone o repositório:
     ```sh
-    git clone https://github.com/yourusername/CustomMaps.git
+    git clone https://github.com/davialmeida135/CustomMaps.git
     ```
 2. Navegue até o diretório do projeto:
     ```sh
