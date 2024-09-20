@@ -201,7 +201,7 @@ async def main(page: ft.Page):
                     pinch_zoom_win_gestures=map.MapMultiFingerGesture.PINCH_ZOOM,
                     
                     ),
-                on_init=lambda e: print(f"Initialized Map"),
+                on_init=lambda e: print("Initialized Map"),
                 #on_tap=handle_tap,
                 #on_secondary_tap=handle_tap,
                 #on_long_press=handle_tap,
@@ -452,4 +452,4 @@ async def main(page: ft.Page):
 if __name__ == "__main__":
     import logging
     logging.basicConfig(level=logging.INFO)
-    ft.app(target=main, name = 'CustomPins')
+    ft.app(target=main)
